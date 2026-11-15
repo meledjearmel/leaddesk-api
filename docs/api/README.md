@@ -21,12 +21,12 @@ Renvoie le compte authentifié.
 
 ```json
 {
-  "id": 1,
-  "name": "Ada",
-  "email": "ada@example.com",
-  "email_verified_at": "2026-11-15T08:00:00.000000Z",
-  "created_at": "2026-11-15T08:00:00.000000Z",
-  "updated_at": "2026-11-15T08:00:00.000000Z"
+    "id": 1,
+    "name": "Ada",
+    "email": "ada@example.com",
+    "email_verified_at": "2026-11-15T08:00:00.000000Z",
+    "created_at": "2026-11-15T08:00:00.000000Z",
+    "updated_at": "2026-11-15T08:00:00.000000Z"
 }
 ```
 

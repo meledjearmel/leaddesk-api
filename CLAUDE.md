@@ -32,19 +32,19 @@ Laravel 13, PHP 8.4+, PostgreSQL (SQLite en mémoire pour les tests, job CI Post
 
 Même vocabulaire que les documents ; anglais dans le code, français dans l'interface et la documentation.
 
-| Document | Code |
-|---|---|
-| entreprise | `Company` |
-| unité | `Unit` |
-| poste | `Position` |
-| agent | `Agent` |
+| Document        | Code           |
+| --------------- | -------------- |
+| entreprise      | `Company`      |
+| unité           | `Unit`         |
+| poste           | `Position`     |
+| agent           | `Agent`        |
 | type d'activité | `ActivityType` |
-| activité | `Activity` |
-| tâche | `Task` |
-| projet | `Project` |
-| règle | `Rule` |
-| décision | `Decision` |
-| Skill | `Skill` |
+| activité        | `Activity`     |
+| tâche           | `Task`         |
+| projet          | `Project`      |
+| règle           | `Rule`         |
+| décision        | `Decision`     |
+| Skill           | `Skill`        |
 
 ## Conventions
 
