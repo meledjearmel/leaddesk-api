@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\PositionController;
+use App\Http\Controllers\Api\V1\UnitController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +29,11 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/company', [CompanyController::class, 'show'])->name('company.show');
         Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+
+        Route::apiResource('units', UnitController::class)->whereNumber('unit');
+        Route::post('/units/{unit}/restore', [UnitController::class, 'restore'])->whereNumber('unit')->name('units.restore');
+
+        Route::apiResource('positions', PositionController::class)->whereNumber('position');
+        Route::post('/positions/{position}/restore', [PositionController::class, 'restore'])->whereNumber('position')->name('positions.restore');
     });
 });

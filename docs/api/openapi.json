@@ -16,6 +16,12 @@
         },
         {
             "name": "Entreprise"
+        },
+        {
+            "name": "Organisation"
+        },
+        {
+            "name": "Postes"
         }
     ],
     "security": [
@@ -385,6 +391,550 @@
                     }
                 }
             }
+        },
+        "/units": {
+            "get": {
+                "operationId": "v1.units.index",
+                "description": "Liste \u00e0 plat, tri\u00e9e ; l'arbre se reconstruit avec `parent_id`.\nAvec `trashed=1`, renvoie la corbeille \u00e0 la place.",
+                "summary": "Lister les unit\u00e9s",
+                "tags": [
+                    "Organisation"
+                ],
+                "parameters": [
+                    {
+                        "name": "trashed",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `UnitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UnitResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.units.store",
+                "summary": "Cr\u00e9er une unit\u00e9",
+                "tags": [
+                    "Organisation"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "`UnitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UnitResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/units/{unit}": {
+            "get": {
+                "operationId": "v1.units.show",
+                "summary": "Lire une unit\u00e9",
+                "tags": [
+                    "Organisation"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UnitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UnitResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.units.update",
+                "description": "Une unit\u00e9 ne peut pas \u00eatre d\u00e9plac\u00e9e sous elle-m\u00eame ni sous une de ses sous-unit\u00e9s.",
+                "summary": "Modifier une unit\u00e9",
+                "tags": [
+                    "Organisation"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UnitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UnitResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.units.destroy",
+                "description": "Refus\u00e9 (409) tant que l'unit\u00e9 contient des sous-unit\u00e9s ou des postes.",
+                "summary": "Mettre une unit\u00e9 \u00e0 la corbeille",
+                "tags": [
+                    "Organisation"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/units/{unit}/restore": {
+            "post": {
+                "operationId": "v1.units.restore",
+                "description": "Refus\u00e9 (409) si son unit\u00e9 parente est elle-m\u00eame \u00e0 la corbeille.",
+                "summary": "Restaurer une unit\u00e9 depuis la corbeille",
+                "tags": [
+                    "Organisation"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UnitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UnitResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/positions": {
+            "get": {
+                "operationId": "v1.positions.index",
+                "description": "Filtrable par unit\u00e9. Avec `trashed=1`, renvoie la corbeille \u00e0 la place.",
+                "summary": "Lister les postes",
+                "tags": [
+                    "Postes"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "trashed",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `PositionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PositionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.positions.store",
+                "description": "Le poste est en service (`active`) sauf si `status` vaut `draft`.",
+                "summary": "Cr\u00e9er un poste",
+                "tags": [
+                    "Postes"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "`PositionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PositionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/positions/{position}": {
+            "get": {
+                "operationId": "v1.positions.show",
+                "summary": "Lire un poste",
+                "tags": [
+                    "Postes"
+                ],
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PositionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PositionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.positions.update",
+                "description": "Un poste ne peut pas rendre compte \u00e0 lui-m\u00eame ni \u00e0 un poste qui d\u00e9pend de lui.",
+                "summary": "Modifier un poste",
+                "tags": [
+                    "Postes"
+                ],
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PositionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PositionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.positions.destroy",
+                "description": "Refus\u00e9 (409) tant que d'autres postes lui rendent compte ou qu'un agent l'occupe.",
+                "summary": "Mettre un poste \u00e0 la corbeille",
+                "tags": [
+                    "Postes"
+                ],
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/positions/{position}/restore": {
+            "post": {
+                "operationId": "v1.positions.restore",
+                "description": "Refus\u00e9 (409) si son unit\u00e9 est \u00e0 la corbeille.",
+                "summary": "Restaurer un poste depuis la corbeille",
+                "tags": [
+                    "Postes"
+                ],
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`PositionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/PositionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -439,6 +989,164 @@
                     "studio"
                 ],
                 "title": "CompanyTemplate"
+            },
+            "LifecycleStatus": {
+                "type": "string",
+                "description": "\u00c9tat d'un poste ou d'un agent : en brouillon ou en service.\n",
+                "enum": [
+                    "draft",
+                    "active"
+                ],
+                "title": "LifecycleStatus"
+            },
+            "PositionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "unit_id": {
+                        "type": "integer"
+                    },
+                    "reports_to_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Poste sup\u00e9rieur ; vide quand le poste rend compte au CEO."
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "mission": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "responsibilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "is_head": {
+                        "type": "boolean",
+                        "description": "Vrai pour le poste de responsable de l'unit\u00e9."
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/LifecycleStatus"
+                    },
+                    "sort_order": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Renseign\u00e9 quand le poste est \u00e0 la corbeille."
+                    }
+                },
+                "required": [
+                    "id",
+                    "unit_id",
+                    "reports_to_id",
+                    "title",
+                    "mission",
+                    "responsibilities",
+                    "is_head",
+                    "status",
+                    "sort_order",
+                    "created_at",
+                    "updated_at",
+                    "deleted_at"
+                ],
+                "title": "PositionResource"
+            },
+            "UnitResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "parent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Unit\u00e9 parente ; vide pour une unit\u00e9 de premier niveau."
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Libell\u00e9 libre du niveau, par exemple \u00ab D\u00e9partement \u00bb ou \u00ab P\u00f4le \u00bb."
+                    },
+                    "color": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Couleur d'affichage au format #RRGGBB."
+                    },
+                    "sort_order": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Renseign\u00e9 quand l'unit\u00e9 est \u00e0 la corbeille."
+                    }
+                },
+                "required": [
+                    "id",
+                    "parent_id",
+                    "name",
+                    "kind",
+                    "color",
+                    "sort_order",
+                    "created_at",
+                    "updated_at",
+                    "deleted_at"
+                ],
+                "title": "UnitResource"
             },
             "UserResource": {
                 "type": "object",

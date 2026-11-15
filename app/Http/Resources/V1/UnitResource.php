@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Resources\V1;
+
+use App\Models\Unit;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+/**
+ * @mixin Unit
+ */
+class UnitResource extends JsonResource
+{
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            /** Unité parente ; vide pour une unité de premier niveau. */
+            'parent_id' => $this->parent_id,
+            'name' => $this->name,
+            /** Libellé libre du niveau, par exemple « Département » ou « Pôle ». */
+            'kind' => $this->kind,
+            /** Couleur d'affichage au format #RRGGBB. */
+            'color' => $this->color,
+            'sort_order' => $this->sort_order,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            /** Renseigné quand l'unité est à la corbeille. */
+            'deleted_at' => $this->deleted_at,
+        ];
+    }
+}

@@ -31,9 +31,9 @@ class ApiContractTest extends TestCase
         $generated = $this->contract($fresh);
         @unlink($fresh);
 
-        $this->assertSame(
-            $committed,
-            $generated,
+        // Comparaison booléenne : la différence complète de deux contrats est illisible.
+        $this->assertTrue(
+            $committed === $generated,
             'Le contrat est périmé : lancer « php artisan scramble:export » et commiter docs/api/openapi.json.',
         );
     }
