@@ -22,6 +22,7 @@ Les descriptions viennent des commentaires des contrôleurs (première ligne : t
 - **Base** : `{APP_URL}/api/v1`.
 - **Format** : JSON (`Accept: application/json`), UTF-8, dates ISO 8601 en UTC.
 - **Authentification** : jeton Sanctum dans l'en-tête `Authorization: Bearer <jeton>`. Un jeton par appareil.
+- **Agent agissant** : quand un agent agit (et non le CEO lui-même), l'application ajoute l'en-tête `X-LeadDesk-Agent: <id de l'agent>`. L'agent doit appartenir à l'entreprise et être en service, sinon `403`. Ses actions sont journalisées à son nom ; certaines routes lui sont réservées ou interdites selon son poste (voir leur description).
 - **Enveloppe** : une ressource est renvoyée sous la clé `data` ; une liste sous `data` (tableau).
 - **Périmètre** : toutes les données métier sont celles de l'entreprise du compte connecté. Une ressource d'une autre entreprise répond `404`.
 - **Erreurs** :

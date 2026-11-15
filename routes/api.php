@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\ActivityTypeController;
 use App\Http\Controllers\Api\V1\AgentController;
 use App\Http\Controllers\Api\V1\AiProviderController;
@@ -7,8 +8,11 @@ use App\Http\Controllers\Api\V1\AuditEntryController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\PositionController;
+use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\UnitController;
 use App\Http\Controllers\Api\V1\WorkflowController;
+use App\Http\Middleware\ResolveActingAgent;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +31,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('/auth/token', [AuthController::class, 'token'])->name('auth.token');
     });
 
-    Route::middleware('auth:sanctum')->group(function (): void {
+    Route::middleware(['auth:sanctum', ResolveActingAgent::class])->group(function (): void {
         Route::delete('/auth/token', [AuthController::class, 'destroy'])->name('auth.token.destroy');
         Route::get('/user', [AuthController::class, 'show'])->name('user');
 
@@ -69,5 +73,22 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::apiResource('activity-types', ActivityTypeController::class)
             ->parameters(['activity-types' => 'activityType'])
             ->whereNumber('activityType');
+
+        Route::apiResource('projects', ProjectController::class)->whereNumber('project');
+        Route::post('/projects/{project}/restore', [ProjectController::class, 'restore'])->whereNumber('project')->name('projects.restore');
+
+        Route::apiResource('activities', ActivityController::class)->whereNumber('activity');
+        Route::controller(ActivityController::class)->prefix('activities/{activity}')->whereNumber('activity')->name('activities.')->group(function (): void {
+            Route::post('/restore', 'restore')->name('restore');
+            Route::post('/step', 'move')->name('step');
+        });
+        Route::post('/activities/{activity}/tasks', [TaskController::class, 'store'])->whereNumber('activity')->name('activities.tasks.store');
+
+        Route::apiResource('tasks', TaskController::class)->except('store')->whereNumber('task');
+        Route::controller(TaskController::class)->prefix('tasks/{task}')->whereNumber('task')->name('tasks.')->group(function (): void {
+            Route::put('/agents', 'syncAgents')->name('agents');
+            Route::post('/step', 'move')->name('step');
+            Route::post('/confirm-completion', 'confirmCompletion')->name('confirm-completion');
+        });
     });
 });

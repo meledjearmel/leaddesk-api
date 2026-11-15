@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Work\RealignWorkflowSteps;
 use App\Enums\FieldType;
 use App\Enums\WorkflowScope;
 use App\Http\Resources\V1\ActivityTypeResource;
@@ -57,11 +58,17 @@ class ActivityTypeController extends ApiController
      * Les changements s'appliquent aussi aux activités en cours (RM-21) :
      * elles lisent toujours les champs et les workflows actuels de leur type.
      */
-    public function update(Request $request, int $activityType): ActivityTypeResource
+    public function update(Request $request, int $activityType, RealignWorkflowSteps $realign): ActivityTypeResource
     {
         $company = $this->company($request);
         $type = $this->find($request, $activityType);
         $type->update($this->validated($request, $company, partial: true));
+
+        // RM-21 : si le parcours du type a changé, les activités et les tâches
+        // en cours sont replacées sur une étape du nouveau parcours.
+        if ($type->wasChanged(['activity_workflow_id', 'task_workflow_id'])) {
+            $realign->forType($type);
+        }
 
         return new ActivityTypeResource($type);
     }

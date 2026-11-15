@@ -131,6 +131,31 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : le plan laisse « statuts et champs configurables détaillés » à trancher en phase 3. Les libellés et le nombre d'étapes restent configurables (RM-03) ; cinq catégories suffisent pour le Dashboard, le bureau et les garde-fous, sans coder de statut en dur.
 - **Alternatives** : transitions configurables étape par étape (plus riche, à ajouter si le besoin apparaît) ; statuts fixes (contraire à RM-03).
 
+### D-021 · Champs configurables d'un type d'activité
+
+- **Décision** : un type d'activité définit ses champs (`key`, `label`, `type`, `required`, `options`) parmi six natures : texte, texte long, nombre, date, oui/non, choix dans une liste. Les valeurs d'une activité sont validées avec la définition **actuelle** du type ; une valeur dont le type ne définit pas le champ n'est pas gardée.
+- **Raison** : détail laissé ouvert par le plan (phase 3). Six natures couvrent les exemples des documents (site, liste de contrôle, dépôt, critères) sans moteur de formulaires.
+- **Alternatives** : champs fichier, relation ou formule, à ajouter au besoin.
+
+### D-022 · Propagation d'un changement de type (RM-21)
+
+- **Décision** : une activité ne copie rien de son type : elle lit ses champs et ses workflows au moment de l'usage. Quand le workflow d'un type change, ou qu'une étape est retirée, les activités et tâches en cours vont sur la première étape de même catégorie du nouveau parcours, sinon sur l'étape de départ.
+- **Raison** : RM-21 impose la propagation ; garder la catégorie conserve l'avancement réel du travail.
+- **Rappel** : l'écart avec RM-23 et RM-27 (qui ne propagent pas) est voulu par les documents ; l'interface devra le rendre explicite.
+
+### D-023 · Un agent agit par l'en-tête `X-LeadDesk-Agent`
+
+- **Décision** : les agents s'exécutent dans l'application du CEO, qui appelle l'API avec le jeton du CEO et l'en-tête `X-LeadDesk-Agent: <id>`. L'agent doit appartenir à l'entreprise et être en service, sinon 403. Tout ce qu'il fait est journalisé à son nom (RM-34). Sans en-tête, c'est le CEO qui agit.
+- **Raison** : en V1 le seul compte est celui du CEO et l'exécution est locale ; un jeton par agent n'apporterait rien de plus tant que tout tourne sur son ordinateur.
+- **Limite connue** : l'en-tête est déclaratif. Les droits fins par poste (RM-14) viendront avec le MCP interne en phase 6.
+- **Alternatives** : un jeton Sanctum par agent, avec ses capacités.
+
+### D-024 · Qui confirme la fin d'une tâche (RM-19) et qui affecte (RM-08)
+
+- **Décision** : une tâche appartient à une équipe (une des unités de son activité). Une étape de catégorie `done` ne s'atteint que par `confirm-completion`, réservé au **responsable de l'équipe** : l'agent en service qui occupe le poste de responsable de l'unité, sinon celui de l'unité parente la plus proche. Le CEO ne confirme lui-même que si aucune unité de la chaîne n'a de responsable en service. L'affectation des agents à une tâche est ouverte au CEO et, parmi les agents, au seul responsable de l'équipe.
+- **Raison** : RM-19 est un garde-fou : le CEO ne doit pas pouvoir court-circuiter le responsable par habitude. Le repli vers le CEO évite qu'une tâche reste bloquée dans une entreprise sans responsable (entreprise vierge, postes en brouillon).
+- **Alternatives** : laisser le CEO confirmer dans tous les cas ; bloquer sans repli.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

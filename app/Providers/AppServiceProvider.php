@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\ActingAgent;
 use App\Support\Audit;
 use Carbon\CarbonImmutable;
 use Dedoc\Scramble\Scramble;
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Un seul journal par requête : il porte l'auteur courant (RM-34).
         $this->app->scoped(Audit::class);
+        // L'agent au nom duquel la requête agit (en-tête X-LeadDesk-Agent).
+        $this->app->scoped(ActingAgent::class);
     }
 
     /**

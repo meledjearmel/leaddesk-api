@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Work\RealignWorkflowSteps;
 use App\Enums\StepCategory;
 use App\Enums\WorkflowScope;
 use App\Http\Resources\V1\WorkflowResource;
@@ -97,7 +98,7 @@ class WorkflowController extends ApiController
      * avec son `id` est conservée (renommée, déplacée), une étape sans `id`
      * est créée, une étape absente est retirée.
      */
-    public function update(Request $request, int $workflow): WorkflowResource
+    public function update(Request $request, int $workflow, RealignWorkflowSteps $realign): WorkflowResource
     {
         $model = $this->find($request, $workflow);
         $data = $request->validate([
@@ -109,7 +110,7 @@ class WorkflowController extends ApiController
             'steps.*.category' => ['required', Rule::enum(StepCategory::class)],
         ]);
 
-        DB::transaction(function () use ($model, $data): void {
+        DB::transaction(function () use ($model, $data, $realign): void {
             if (isset($data['name'])) {
                 $model->update(['name' => $data['name']]);
             }
@@ -118,6 +119,8 @@ class WorkflowController extends ApiController
                 /** @var list<array{id?: int, name: string, category: string}> $steps */
                 $steps = $data['steps'];
                 $this->replaceSteps($model, $steps);
+                // Les éléments posés sur une étape retirée changent d'étape (RM-21).
+                $realign->forWorkflow($model);
             }
         });
 

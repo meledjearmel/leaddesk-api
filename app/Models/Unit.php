@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LifecycleStatus;
 use App\Models\Concerns\Audited;
 use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -67,6 +68,34 @@ class Unit extends Model
     public function positions(): HasMany
     {
         return $this->hasMany(Position::class);
+    }
+
+    /**
+     * Responsable de l'équipe : l'agent en service qui occupe le poste de
+     * responsable de cette unité, ou à défaut celui de l'unité parente la plus
+     * proche. Vide si aucune unité de la chaîne n'a de responsable en service.
+     */
+    public function responsibleAgent(): ?Agent
+    {
+        $current = $this;
+        $seen = [];
+
+        while ($current !== null && ! isset($seen[$current->id])) {
+            $agent = Agent::query()
+                ->where('status', LifecycleStatus::Active)
+                ->whereIn('position_id', $current->positions()->where('is_head', true)->select('id'))
+                ->orderBy('id')
+                ->first();
+
+            if ($agent !== null) {
+                return $agent;
+            }
+
+            $seen[$current->id] = true;
+            $current = $current->parent;
+        }
+
+        return null;
     }
 
     /**

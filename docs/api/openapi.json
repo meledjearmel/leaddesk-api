@@ -37,6 +37,15 @@
         },
         {
             "name": "Types d'activit\u00e9"
+        },
+        {
+            "name": "Projets"
+        },
+        {
+            "name": "Activit\u00e9s"
+        },
+        {
+            "name": "T\u00e2ches"
         }
     ],
     "security": [
@@ -2760,6 +2769,1249 @@
                 }
             }
         },
+        "/projects": {
+            "get": {
+                "operationId": "v1.projects.index",
+                "summary": "Lister les projets",
+                "tags": [
+                    "Projets"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `ProjectResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProjectResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.projects.store",
+                "summary": "Cr\u00e9er un projet",
+                "tags": [
+                    "Projets"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 160
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 10000
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`ProjectResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/projects/{project}": {
+            "get": {
+                "operationId": "v1.projects.show",
+                "summary": "Lire un projet",
+                "tags": [
+                    "Projets"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ProjectResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.projects.update",
+                "summary": "Modifier un projet",
+                "tags": [
+                    "Projets"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 160
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 10000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ProjectResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.projects.destroy",
+                "description": "Ses activit\u00e9s ne sont pas supprim\u00e9es : elles restent rattach\u00e9es au\nprojet, qui peut \u00eatre restaur\u00e9.",
+                "summary": "Mettre un projet \u00e0 la corbeille",
+                "tags": [
+                    "Projets"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/projects/{project}/restore": {
+            "post": {
+                "operationId": "v1.projects.restore",
+                "summary": "Restaurer un projet depuis la corbeille",
+                "tags": [
+                    "Projets"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ProjectResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProjectResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities": {
+            "get": {
+                "operationId": "v1.activities.index",
+                "description": "Filtrable par projet (`project_id`, ou `without_project=1` pour les\nactivit\u00e9s sans projet), par type et par \u00e9quipe.",
+                "summary": "Lister les activit\u00e9s",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "without_project",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "activity_type_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "unit_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.activities.store",
+                "description": "L'activit\u00e9 d\u00e9marre \u00e0 la premi\u00e8re \u00e9tape du workflow de son type. Avec\n`with_task_base`, la base de t\u00e2ches du type est reprise telle quelle ;\nle responsable peut ensuite l'adapter ou la remplacer (RM-20).",
+                "summary": "Cr\u00e9er une activit\u00e9",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "activity_type_id": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 20000
+                                    },
+                                    "project_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Projet de rattachement ; facultatif (RM-17)."
+                                    },
+                                    "unit_ids": {
+                                        "type": "array",
+                                        "description": "\u00c9quipes mobilis\u00e9es ; plusieurs possibles (RM-17).",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "maxItems": 50,
+                                        "uniqueItems": true
+                                    },
+                                    "field_values": {
+                                        "type": "array",
+                                        "description": "Valeurs des champs propres au type, par cl\u00e9.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "due_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "with_task_base": {
+                                        "type": "boolean",
+                                        "description": "Reprendre la base de t\u00e2ches propos\u00e9e par le type."
+                                    }
+                                },
+                                "required": [
+                                    "activity_type_id",
+                                    "title"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/ActivityResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "tasks"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities/{activity}": {
+            "get": {
+                "operationId": "v1.activities.show",
+                "summary": "Lire une activit\u00e9 et ses t\u00e2ches",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/ActivityResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "tasks"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.activities.update",
+                "description": "Les valeurs de champs sont valid\u00e9es avec la d\u00e9finition actuelle du\ntype (RM-21).",
+                "summary": "Modifier une activit\u00e9",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 20000
+                                    },
+                                    "project_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Projet de rattachement ; facultatif (RM-17)."
+                                    },
+                                    "unit_ids": {
+                                        "type": "array",
+                                        "description": "\u00c9quipes mobilis\u00e9es ; plusieurs possibles (RM-17).",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "maxItems": 50,
+                                        "uniqueItems": true
+                                    },
+                                    "field_values": {
+                                        "type": "array",
+                                        "description": "Valeurs des champs propres au type, par cl\u00e9.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "due_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.activities.destroy",
+                "summary": "Mettre une activit\u00e9 \u00e0 la corbeille",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities/{activity}/restore": {
+            "post": {
+                "operationId": "v1.activities.restore",
+                "summary": "Restaurer une activit\u00e9 depuis la corbeille",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities/{activity}/step": {
+            "post": {
+                "operationId": "v1.activities.step",
+                "description": "L'\u00e9tape doit appartenir au workflow d'activit\u00e9 actuel du type.",
+                "summary": "Faire avancer une activit\u00e9",
+                "tags": [
+                    "Activit\u00e9s"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "workflow_step_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "workflow_step_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities/{activity}/tasks": {
+            "post": {
+                "operationId": "v1.activities.tasks.store",
+                "description": "La t\u00e2che d\u00e9marre \u00e0 la premi\u00e8re \u00e9tape du workflow de t\u00e2che du type.\n`unit_id` peut \u00eatre omis quand l'activit\u00e9 ne mobilise qu'une \u00e9quipe.",
+                "summary": "Ajouter une t\u00e2che \u00e0 une activit\u00e9",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 20000
+                                    },
+                                    "unit_id": {
+                                        "type": "integer",
+                                        "description": "\u00c9quipe de la t\u00e2che, parmi les \u00e9quipes de l'activit\u00e9."
+                                    }
+                                },
+                                "required": [
+                                    "title"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks": {
+            "get": {
+                "operationId": "v1.tasks.index",
+                "description": "Filtrable par activit\u00e9, \u00e9quipe et agent affect\u00e9.",
+                "summary": "Lister les t\u00e2ches",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "unit_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "agent_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TaskResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}": {
+            "get": {
+                "operationId": "v1.tasks.show",
+                "summary": "Lire une t\u00e2che",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.tasks.update",
+                "summary": "Modifier une t\u00e2che",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 200
+                                    },
+                                    "description": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 20000
+                                    },
+                                    "unit_id": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.tasks.destroy",
+                "summary": "Mettre une t\u00e2che \u00e0 la corbeille",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}/agents": {
+            "put": {
+                "operationId": "v1.tasks.agents",
+                "description": "Remplace la liste : un agent principal et des collaborateurs, ou\nplusieurs agents ensemble. Quand un agent fait la demande, il doit \u00eatre\nle responsable de l'\u00e9quipe de la t\u00e2che (RM-08).",
+                "summary": "Affecter des agents \u00e0 une t\u00e2che",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "agents": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "agent_id": {
+                                                    "type": "integer"
+                                                },
+                                                "is_lead": {
+                                                    "type": "boolean",
+                                                    "description": "Un seul agent principal au plus."
+                                                }
+                                            },
+                                            "required": [
+                                                "agent_id"
+                                            ]
+                                        },
+                                        "maxItems": 50,
+                                        "uniqueItems": true
+                                    }
+                                },
+                                "required": [
+                                    "agents"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}/step": {
+            "post": {
+                "operationId": "v1.tasks.step",
+                "description": "L'\u00e9tape doit appartenir au workflow de t\u00e2che actuel du type. Une \u00e9tape\nde cat\u00e9gorie `done` ne s'atteint que par la confirmation du responsable\n(RM-19).",
+                "summary": "Faire avancer une t\u00e2che",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "workflow_step_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "workflow_step_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}/confirm-completion": {
+            "post": {
+                "operationId": "v1.tasks.confirm-completion",
+                "description": "R\u00e9serv\u00e9 au responsable de l'\u00e9quipe de la t\u00e2che (RM-19) : l'agent en\nservice qui occupe le poste de responsable de l'unit\u00e9, ou \u00e0 d\u00e9faut celui\nde l'unit\u00e9 parente la plus proche. Le CEO ne confirme lui-m\u00eame que si\naucune de ces unit\u00e9s n'a de responsable en service.",
+                "summary": "Confirmer la fin d'une t\u00e2che",
+                "tags": [
+                    "T\u00e2ches"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TaskResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -2793,6 +4045,105 @@
             }
         },
         "schemas": {
+            "ActivityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "activity_type_id": {
+                        "type": "integer"
+                    },
+                    "project_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Projet de rattachement ; vide pour une activit\u00e9 sans projet."
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "workflow_step_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "\u00c9tape en cours dans le workflow d'activit\u00e9 du type."
+                    },
+                    "step_category": {
+                        "anyOf": [
+                            {
+                                "description": "Cat\u00e9gorie de l'\u00e9tape en cours ; vide si le type n'a pas de workflow.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
+                                "$ref": "#/components/schemas/StepCategory"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "field_values": {
+                        "type": "object",
+                        "description": "Valeurs des champs propres au type, par cl\u00e9.",
+                        "additionalProperties": {}
+                    },
+                    "unit_ids": {
+                        "type": "array",
+                        "description": "\u00c9quipes mobilis\u00e9es.",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "due_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "tasks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TaskResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "activity_type_id",
+                    "project_id",
+                    "title",
+                    "description",
+                    "workflow_step_id",
+                    "step_category",
+                    "field_values",
+                    "unit_ids",
+                    "due_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ActivityResource"
+            },
             "ActivityTypeResource": {
                 "type": "object",
                 "properties": {
@@ -3356,6 +4707,49 @@
                 ],
                 "title": "PositionResource"
             },
+            "ProjectResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "activities_count": {
+                        "type": "integer",
+                        "description": "Nombre d'activit\u00e9s regroup\u00e9es par le projet."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ProjectResource"
+            },
             "StepCategory": {
                 "type": "string",
                 "description": "Sens d'une \u00e9tape de workflow. Le libell\u00e9 de l'\u00e9tape est libre ; la cat\u00e9gorie permet au logiciel de savoir o\u00f9 en est le travail.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
@@ -3367,6 +4761,120 @@
                     "cancelled"
                 ],
                 "title": "StepCategory"
+            },
+            "TaskResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "activity_id": {
+                        "type": "integer"
+                    },
+                    "unit_id": {
+                        "type": "integer",
+                        "description": "\u00c9quipe dont le responsable confirme la fin de la t\u00e2che."
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "workflow_step_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "\u00c9tape en cours dans le workflow de t\u00e2che du type."
+                    },
+                    "step_category": {
+                        "anyOf": [
+                            {
+                                "description": "Cat\u00e9gorie de l'\u00e9tape en cours ; vide si le type n'a pas de workflow de t\u00e2che.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
+                                "$ref": "#/components/schemas/StepCategory"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "agents": {
+                        "type": "array",
+                        "description": "Agents affect\u00e9s, l'agent principal d'abord.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "agent_id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "is_lead": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "agent_id",
+                                "name",
+                                "is_lead"
+                            ]
+                        }
+                    },
+                    "completed_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Date de confirmation de la fin ; vide tant que la t\u00e2che n'est pas confirm\u00e9e."
+                    },
+                    "confirmed_by_agent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Responsable qui a confirm\u00e9 la fin."
+                    },
+                    "confirmed_by_ceo": {
+                        "type": "boolean",
+                        "description": "Vrai quand le CEO a confirm\u00e9 lui-m\u00eame, faute de responsable en service."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "activity_id",
+                    "unit_id",
+                    "title",
+                    "description",
+                    "workflow_step_id",
+                    "step_category",
+                    "agents",
+                    "completed_at",
+                    "confirmed_by_agent_id",
+                    "confirmed_by_ceo",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "TaskResource"
             },
             "UnitResource": {
                 "type": "object",
