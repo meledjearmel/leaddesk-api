@@ -12,15 +12,21 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateCompany
 {
+    public function __construct(private readonly ApplyCompanyTemplate $applyTemplate) {}
+
     public function handle(User $user, string $name, CompanyTemplate $template): Company
     {
+        // Tout ou rien : une entreprise n'existe jamais avec un modèle à moitié copié.
         return DB::transaction(function () use ($user, $name, $template): Company {
-            // Une entreprise vierge existe sans unité, poste ni type d'activité.
-            return Company::query()->create([
+            $company = Company::query()->create([
                 'user_id' => $user->id,
                 'name' => $name,
                 'template' => $template,
             ]);
+
+            $this->applyTemplate->handle($company, $template);
+
+            return $company;
         });
     }
 }

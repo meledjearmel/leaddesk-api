@@ -97,6 +97,18 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : application directe de RM-06 et RM-10 ; garder la règle vraie dans le temps évite un agent « en service » incapable de travailler.
 - **Alternatives** : repasser automatiquement l'agent en brouillon quand il perd son dernier modèle.
 
+### D-016 · Composition du modèle studio
+
+- **Décision** : le modèle studio est un fichier de données (`database/templates/studio.php`) copié dans l'entreprise à sa création, dans une seule transaction. Il crée les huit départements, les pôles de Technique (Architecture, Développement, Déploiement, Maintenance) et de Qualité et sécurité (Tests et validation, Sécurité), et 26 postes occupés par 26 agents, tous en brouillon : un responsable par unité, plus un poste opérationnel par département sans pôle et par pôle. Aucun modèle IA, aucun accès, aucune clé.
+- **Raison** : les documents fixent les départements et les pôles ; `CONCEPTION_STUDIO_VIRTUEL.md` indique « un employé opérationnel en plus de son responsable ». Intitulés, missions, prénoms et couleurs sont des contenus de départ que le CEO adapte (RM-04).
+- **Alternatives** : un modèle plus petit (responsables seulement) ou stocké en base pour être modifiable sans déploiement.
+
+### D-017 · « CEO virtuel » et COO : un seul poste dans le modèle
+
+- **Décision** : le modèle crée un seul poste de tête, « COO », au département Direction ; il rend compte au CEO humain et tous les autres postes lui rendent compte, directement ou non. C'est lui qui tient le rôle que la synthèse appelle « CEO virtuel » (alerter, présenter les propositions, recevoir les missions).
+- **Raison** : `CONCEPTION_LEADDESK.md` réserve « CEO » à l'utilisateur humain et nomme « COO » le rôle de coordination ; la synthèse parle d'un « CEO virtuel » sans le définir comme un poste distinct. Créer deux postes aurait inventé une exigence.
+- **À confirmer par Armel** : le « CEO virtuel » est-il bien le COO, ou un agent distinct placé au-dessus de lui ? Le changement se limite au fichier du modèle.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).
