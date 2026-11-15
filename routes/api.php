@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\CostController;
 use App\Http\Controllers\Api\V1\DecisionController;
 use App\Http\Controllers\Api\V1\DeviceController;
+use App\Http\Controllers\Api\V1\ExecutionController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RuleController;
@@ -126,5 +127,12 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/costs/summary', [CostController::class, 'summary'])->name('costs.summary');
         Route::get('/cost-limits', [CostController::class, 'limits'])->name('cost-limits.index');
         Route::put('/cost-limits', [CostController::class, 'setLimit'])->name('cost-limits.set');
+
+        Route::get('/execution/tools', [ExecutionController::class, 'catalog'])->name('execution.tools');
+        Route::put('/positions/{position}/tool-permissions', [ExecutionController::class, 'setPositionPermissions'])->whereNumber('position')->name('positions.tool-permissions');
+        Route::get('/agents/{agent}/execution-profile', [ExecutionController::class, 'agentProfile'])->whereNumber('agent')->name('agents.execution-profile');
+        Route::post('/task-runs/{taskRun}/approvals', [ExecutionController::class, 'requestApproval'])->whereNumber('taskRun')->name('task-runs.approvals');
+        Route::get('/projects/{project}/folders', [ExecutionController::class, 'folders'])->whereNumber('project')->name('projects.folders');
+        Route::put('/projects/{project}/folders', [ExecutionController::class, 'setFolders'])->whereNumber('project')->name('projects.folders.set');
     });
 });

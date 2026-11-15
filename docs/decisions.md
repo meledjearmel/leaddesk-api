@@ -193,6 +193,13 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Limite connue** : le coût est déclaré par l'hôte après l'appel ; le dépassement vaut donc au plus le coût d'un appel. La méthode d'estimation (RM-37) reste à définir : le serveur ne fait que garder l'estimation saisie.
 - **Alternatives** : limite par activité ou par agent ; devise autre que le dollar (le champ est en millionièmes pour rester exact).
 
+### D-031 · Permissions d'exécution par poste et dossiers autorisés
+
+- **Décision** : le plan laisse le « modèle de permissions d'exécution » à concevoir en début de phase 4. Chaque poste règle, outil par outil, un mode : `allow` (autorisé d'office), `ask` (soumis à l'approbation du CEO à chaque usage) ou `deny`. Le catalogue des outils locaux (lire, écrire, supprimer vers la corbeille, lancer une commande, consulter une page web) et le mode par défaut sont des réglages ; le défaut est prudent : `ask`. L'agent hérite du poste qu'il occupe ; sans poste, tout est interdit. Avant d'utiliser un outil, l'hôte demande `POST /task-runs/{id}/approvals` : réponse immédiate pour `allow` et `deny`, décision `tool_approval` en attente pour `ask`. Seul le CEO règle les permissions et autorise les dossiers d'un projet (documentation et code, par ordinateur) ; changer un chemin vaut nouvelle autorisation. Le serveur ne garde que les chemins.
+- **Raison** : même logique que les accès MCP (liés au poste, RM-11) ; `CONCEPTION_LEADDESK.md` §6 décrit l'autorisation unique des deux dossiers.
+- **Limite** : l'hôte applique ces permissions ; le serveur ne peut pas empêcher un appel local qu'il ne voit pas. Les accès au serveur restent, eux, contrôlés côté serveur.
+- **Alternatives** : permissions par agent ; liste blanche de commandes.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

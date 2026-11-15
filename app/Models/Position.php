@@ -26,12 +26,13 @@ use Illuminate\Support\Carbon;
  * @property bool $is_head
  * @property LifecycleStatus $status
  * @property int $sort_order
+ * @property array<string, string>|null $tool_permissions
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property-read Position|null $reportsTo
  */
-#[Fillable(['company_id', 'unit_id', 'reports_to_id', 'title', 'mission', 'responsibilities', 'is_head', 'status', 'sort_order'])]
+#[Fillable(['company_id', 'unit_id', 'reports_to_id', 'title', 'mission', 'responsibilities', 'is_head', 'status', 'sort_order', 'tool_permissions'])]
 class Position extends Model
 {
     use Audited;
@@ -114,6 +115,7 @@ class Position extends Model
             'responsibilities' => 'array',
             'is_head' => 'boolean',
             'status' => LifecycleStatus::class,
+            'tool_permissions' => 'array',
             'sort_order' => 'integer',
         ];
     }

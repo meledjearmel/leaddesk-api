@@ -61,6 +61,9 @@
         },
         {
             "name": "Co\u00fbts"
+        },
+        {
+            "name": "Permissions d'ex\u00e9cution"
         }
     ],
     "security": [
@@ -5848,6 +5851,498 @@
                 }
             }
         },
+        "/execution/tools": {
+            "get": {
+                "operationId": "v1.execution.tools",
+                "summary": "Lire le catalogue des outils locaux",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "default_mode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "allow",
+                                                        "ask",
+                                                        "deny"
+                                                    ]
+                                                },
+                                                "tools": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "tool": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "tool",
+                                                            "label"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "default_mode",
+                                                "tools"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/positions/{position}/tool-permissions": {
+            "put": {
+                "operationId": "v1.positions.tool-permissions",
+                "description": "R\u00e9serv\u00e9 au CEO. Pour chaque outil : `allow` (autoris\u00e9 d'office), `ask`\n(soumis \u00e0 approbation) ou `deny`. Un outil absent de la liste reprend le\nmode par d\u00e9faut.",
+                "summary": "R\u00e9gler les permissions d'ex\u00e9cution d'un poste",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/ToolMode"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "permissions"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "position_id": {
+                                                    "type": "integer"
+                                                },
+                                                "tool_permissions": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "position_id",
+                                                "tool_permissions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/execution-profile": {
+            "get": {
+                "operationId": "v1.agents.execution-profile",
+                "description": "Ce que l'agent peut faire sur l'ordinateur h\u00f4te : le mode de chaque\noutil, h\u00e9rit\u00e9 de son poste. Sans poste, tout est interdit.",
+                "summary": "Lire le profil d'ex\u00e9cution d'un agent",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "agent_id": {
+                                                    "type": "integer"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "tool_permissions": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "agent_id",
+                                                "position_id",
+                                                "tool_permissions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}/approvals": {
+            "post": {
+                "operationId": "v1.task-runs.approvals",
+                "description": "Appel\u00e9 par l'ordinateur h\u00f4te avant d'utiliser un outil. R\u00e9ponse :\n`allowed` (autoris\u00e9 d'office, rien \u00e0 attendre), `denied` (interdit au\nposte), ou `pending` avec la d\u00e9cision \u00e0 suivre jusqu'\u00e0 la r\u00e9ponse du CEO.",
+                "summary": "Demander l'approbation d'une action",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "tool": {
+                                        "type": "string",
+                                        "maxLength": 60
+                                    },
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "Ce que l'agent veut faire, en clair pour le CEO.",
+                                        "maxLength": 2000
+                                    }
+                                },
+                                "required": [
+                                    "tool",
+                                    "summary"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "outcome": {
+                                                    "type": "string",
+                                                    "const": "pending"
+                                                },
+                                                "decision": {
+                                                    "$ref": "#/components/schemas/DecisionResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "outcome",
+                                                "decision"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "outcome": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "allowed",
+                                                        "denied"
+                                                    ]
+                                                },
+                                                "decision": {
+                                                    "type": "null"
+                                                }
+                                            },
+                                            "required": [
+                                                "outcome",
+                                                "decision"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/projects/{project}/folders": {
+            "get": {
+                "operationId": "v1.projects.folders",
+                "description": "Filtrable par ordinateur.",
+                "summary": "Lire les dossiers autoris\u00e9s d'un projet",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "device_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "device_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "path": {
+                                                        "type": "string"
+                                                    },
+                                                    "authorized_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "device_id",
+                                                    "kind",
+                                                    "path",
+                                                    "authorized_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.projects.folders.set",
+                "description": "R\u00e9serv\u00e9 au CEO : une seule autorisation couvre le dossier de\ndocumentation et le dossier de code. Changer un chemin vaut nouvelle\nautorisation ; un chemin vide retire le dossier.",
+                "summary": "Autoriser les dossiers d'un projet sur un ordinateur",
+                "tags": [
+                    "Permissions d'ex\u00e9cution"
+                ],
+                "parameters": [
+                    {
+                        "name": "project",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "device_id": {
+                                        "type": "integer"
+                                    },
+                                    "documentation_path": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "description": "Chemin du dossier de documentation sur cet ordinateur.",
+                                        "maxLength": 1000
+                                    },
+                                    "code_path": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "description": "Chemin du dossier de code ou de livrable sur cet ordinateur.",
+                                        "maxLength": 1000
+                                    }
+                                },
+                                "required": [
+                                    "device_id",
+                                    "documentation_path",
+                                    "code_path"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -7039,6 +7534,16 @@
                     "ended_at"
                 ],
                 "title": "TaskRunResource"
+            },
+            "ToolMode": {
+                "type": "string",
+                "description": "Ce qu'un poste peut faire d'un outil local pendant l'ex\u00e9cution.\n| |\n|---|\n| `allow` <br/> Autoris\u00e9 d'office. |\n| `ask` <br/> Soumis \u00e0 l'approbation du CEO, \u00e0 chaque usage. |\n| `deny` <br/> Interdit. |",
+                "enum": [
+                    "allow",
+                    "ask",
+                    "deny"
+                ],
+                "title": "ToolMode"
             },
             "UnitResource": {
                 "type": "object",

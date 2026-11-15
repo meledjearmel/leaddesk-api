@@ -35,6 +35,8 @@ class Decision extends Model
 
     public const string KIND_COST_LIMIT = 'cost_limit';
 
+    public const string KIND_TOOL_APPROVAL = 'tool_approval';
+
     /**
      * @return BelongsTo<Company, $this>
      */
