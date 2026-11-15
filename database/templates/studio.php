@@ -11,7 +11,8 @@
 |
 | Tous les postes et agents créés depuis ce modèle sont en brouillon.
 |
-| Structure d'une unité : name, kind, color, positions[], children[].
+| Structure d'une unité : name, kind, system_role (facultatif : hr ou
+| facilities, D-013), color, positions[], children[].
 | Structure d'un poste : key (unique dans le fichier), title, mission,
 | responsibilities[], is_head, reports_to (clé d'un autre poste, ou null
 | pour un poste qui rend compte au CEO), agent { name, bio }.
@@ -228,6 +229,7 @@ return [
         [
             'name' => 'Ressources humaines',
             'kind' => 'Département',
+            'system_role' => 'hr',
             'color' => '#B58BD9',
             'positions' => [
                 $head('hr-head', 'Responsable Ressources humaines', 'Préparer les recrutements et suivre l\'évolution des agents.', [
@@ -255,7 +257,21 @@ return [
                     'Tenir les dossiers à jour',
                 ], 'finance-head', 'Apolline', 'Ordonnée, elle retrouve n\'importe quel document en dix secondes.'),
             ],
-            'children' => [],
+            'children' => [
+                [
+                    'name' => 'Moyens généraux',
+                    'kind' => 'Pôle',
+                    'system_role' => 'facilities',
+                    'color' => '#8C9A5B',
+                    'positions' => [
+                        $head('facilities-head', 'Responsable Moyens généraux', 'Aménager le bureau et proposer au CEO les réaménagements nécessaires.', [
+                            'Proposer un aménagement quand l\'organisation ou l\'effectif change',
+                            'Veiller à ce que chaque département ait ses salles',
+                        ], 'finance-head', 'Lisandre', 'Pratique, il pense à la place de chacun avant que la question se pose.'),
+                    ],
+                    'children' => [],
+                ],
+            ],
         ],
     ],
 ];

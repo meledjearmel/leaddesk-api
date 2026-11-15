@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\LifecycleStatus;
+use App\Enums\SystemRole;
 use App\Models\Concerns\Audited;
 use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -21,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $parent_id
  * @property string $name
  * @property string|null $kind
+ * @property SystemRole|null $system_role
  * @property string|null $color
  * @property int $sort_order
  * @property Carbon|null $created_at
@@ -28,7 +30,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property-read Unit|null $parent
  */
-#[Fillable(['company_id', 'parent_id', 'name', 'kind', 'color', 'sort_order'])]
+#[Fillable(['company_id', 'parent_id', 'name', 'kind', 'system_role', 'color', 'sort_order'])]
 class Unit extends Model
 {
     use Audited;
@@ -125,6 +127,7 @@ class Unit extends Model
     {
         return [
             'sort_order' => 'integer',
+            'system_role' => SystemRole::class,
         ];
     }
 }

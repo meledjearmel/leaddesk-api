@@ -209,6 +209,12 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Limite** : changer le rapport fait sauter l'heure simulée affichée ; c'est sans conséquence puisqu'elle ne sert qu'à l'ambiance.
 - **Alternatives** : une heure de départ stockée à chaque changement (continuité visuelle, mais un état de plus à synchroniser) ; une table de réglages clé-valeur.
 
+### D-033 · Conversation et contexte partagé d'une activité
+
+- **Décision** : une activité a une conversation de travail (`activity_messages`, natures `message` et `handoff`, rattachement facultatif à une de ses tâches) et un contexte partagé (`activity_context_items` : titre, contenu, ordre). Participants : le CEO, les agents affectés à une tâche de l'activité et les responsables de ses équipes ; seuls eux écrivent. Une passation ne porte que des références de fichiers (libellé, chemin, ordinateur de l'entreprise), jamais leur contenu. Un message ne se modifie pas ; seul le CEO le retire (corbeille). Le contexte partagé est aussi remis à l'agent dans son contexte de tâche (RM-33). Le temps réel passe par `company.changed` (D-018) ; `after_id` recharge seulement les nouveaux messages.
+- **Raison** : le plan (phase 5) et la référence `07-interface-sombre-conversation.png` demandent ces deux onglets ; le modèle de contexte partagé restant « à concevoir », la forme la plus simple (notes ordonnées) est retenue. « Les agents ne prennent la parole que lorsqu'ils sont concernés » (`CONCEPTION_STUDIO_VIRTUEL.md`) devient la règle des participants.
+- **Alternatives** : conversations indépendantes des activités (direction, réunions), à ajouter plus tard ; participants choisis à la main ; contexte versionné.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

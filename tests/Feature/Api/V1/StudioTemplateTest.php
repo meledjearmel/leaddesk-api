@@ -179,10 +179,24 @@ class StudioTemplateTest extends TestCase
 
         $this->postJson('/api/v1/company', ['name' => 'Cabinet HSE', 'template' => 'blank'])->assertCreated();
 
-        $this->getJson('/api/v1/units')->assertJsonCount(0, 'data');
-        $this->getJson('/api/v1/positions')->assertJsonCount(0, 'data');
+        // Seules les unités système (D-013) existent, sans agent.
+        $this->getJson('/api/v1/units')->assertJsonCount(2, 'data');
+        $this->getJson('/api/v1/positions')->assertJsonCount(2, 'data');
         $this->getJson('/api/v1/agents')->assertJsonCount(0, 'data');
-        $this->assertGreaterThan(0, Unit::query()->count());
+        $this->assertGreaterThan(2, Unit::query()->count());
+    }
+
+    /**
+     * D-013 : le studio porte lui-même ses unités système, sans doublon.
+     */
+    public function test_the_studio_carries_its_system_units_without_duplicates(): void
+    {
+        $hr = $this->company->units()->where('system_role', 'hr')->sole();
+        $facilities = $this->company->units()->where('system_role', 'facilities')->sole();
+
+        $this->assertSame('Ressources humaines', $hr->name);
+        $this->assertSame('Moyens généraux', $facilities->name);
+        $this->assertSame('Administration et finances', $facilities->parent?->name);
     }
 
     public function test_the_whole_studio_is_reachable_through_the_api(): void

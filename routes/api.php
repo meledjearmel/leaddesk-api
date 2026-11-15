@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ActivityController;
+use App\Http\Controllers\Api\V1\ActivityConversationController;
 use App\Http\Controllers\Api\V1\ActivityTypeController;
 use App\Http\Controllers\Api\V1\AgentContextController;
 use App\Http\Controllers\Api\V1\AgentController;
@@ -91,6 +92,15 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::controller(ActivityController::class)->prefix('activities/{activity}')->whereNumber('activity')->name('activities.')->group(function (): void {
             Route::post('/restore', 'restore')->name('restore');
             Route::post('/step', 'move')->name('step');
+        });
+        Route::controller(ActivityConversationController::class)->prefix('activities/{activity}')->whereNumber(['activity', 'message', 'item'])->name('activities.')->group(function (): void {
+            Route::get('/messages', 'messages')->name('messages.index');
+            Route::post('/messages', 'storeMessage')->name('messages.store');
+            Route::delete('/messages/{message}', 'destroyMessage')->name('messages.destroy');
+            Route::get('/context', 'context')->name('context.index');
+            Route::post('/context', 'storeContext')->name('context.store');
+            Route::patch('/context/{item}', 'updateContext')->name('context.update');
+            Route::delete('/context/{item}', 'destroyContext')->name('context.destroy');
         });
         Route::post('/activities/{activity}/tasks', [TaskController::class, 'store'])->whereNumber('activity')->name('activities.tasks.store');
 

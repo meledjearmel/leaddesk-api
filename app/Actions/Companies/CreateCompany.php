@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateCompany
 {
-    public function __construct(private readonly ApplyCompanyTemplate $applyTemplate) {}
+    public function __construct(
+        private readonly ApplyCompanyTemplate $applyTemplate,
+        private readonly EnsureSystemUnits $ensureSystemUnits,
+    ) {}
 
     public function handle(User $user, string $name, CompanyTemplate $template): Company
     {
@@ -25,6 +28,9 @@ class CreateCompany
             ]);
 
             $this->applyTemplate->handle($company, $template);
+
+            // D-013 : RH et Moyens généraux existent dans toute entreprise.
+            $this->ensureSystemUnits->handle($company);
 
             return $company;
         });

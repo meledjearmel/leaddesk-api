@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api\V1;
 
 use App\Models\Activity;
+use App\Models\ActivityContextItem;
 use App\Models\ActivityType;
 use App\Models\Agent;
 use App\Models\AuditEntry;
@@ -45,6 +46,8 @@ class AgentContextTest extends TestCase
         Rule::factory()->for($company)->create(['title' => 'Tests avant fusion', 'unit_id' => $team->id, 'effective_at' => now()->subDay()]);
         Rule::factory()->for($company)->create(['title' => 'Règle d\'ailleurs', 'unit_id' => $other->id, 'effective_at' => now()->subDay()]);
 
+        ActivityContextItem::query()->create(['company_id' => $company->id, 'activity_id' => $activity->id, 'title' => 'Objectif', 'content' => 'Formulaire simple.']);
+
         Sanctum::actingAs($company->user);
         $url = "/api/v1/agents/{$dev->id}/tasks/{$task->id}/context";
 
@@ -57,6 +60,7 @@ class AgentContextTest extends TestCase
             ->assertJsonPath('data.related_tasks.1.agents', ['Yanis'])
             ->assertJsonCount(2, 'data.people')
             ->assertJsonPath('data.contacts.0.responsible.name', 'Yanis')
+            ->assertJsonPath('data.shared_context.0.title', 'Objectif')
             ->assertJsonCount(1, 'data.rules')
             ->assertJsonPath('data.rules.0.title', 'Tests avant fusion')
             ->assertJsonPath('data.tool_permissions.read_file', 'ask');

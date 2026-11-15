@@ -48,6 +48,61 @@ class CompanyTest extends TestCase
         $this->getJson('/api/v1/company')->assertOk()->assertJsonPath('data.name', 'Atelier Nord');
     }
 
+    /**
+     * RM-02 et D-013 : même vierge, l'entreprise a ses unités RH et Moyens
+     * généraux, chacune avec un poste de responsable en brouillon, sans agent.
+     */
+    public function test_rm02_a_blank_company_has_its_two_system_units(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->postJson('/api/v1/company', ['name' => 'Atelier Nord', 'template' => 'blank'])->assertCreated();
+
+        $units = $this->getJson('/api/v1/units')->assertOk()->assertJsonCount(2, 'data')->json('data');
+        $this->assertSame(['hr', 'facilities'], array_column($units, 'system_role'));
+        $this->assertSame(['Ressources humaines', 'Moyens généraux'], array_column($units, 'name'));
+
+        $positions = $this->getJson('/api/v1/positions')->assertJsonCount(2, 'data')->json('data');
+        foreach ($positions as $position) {
+            $this->assertTrue($position['is_head']);
+            $this->assertSame('draft', $position['status']);
+        }
+        $this->getJson('/api/v1/agents')->assertJsonCount(0, 'data');
+    }
+
+    /**
+     * D-013 : une unité système se renomme mais ne se supprime pas.
+     */
+    public function test_a_system_unit_can_be_renamed_but_not_deleted(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+        $this->postJson('/api/v1/company', ['name' => 'Atelier Nord', 'template' => 'blank'])->assertCreated();
+
+        $company = Company::query()->sole();
+        $facilities = $company->units()->where('system_role', 'facilities')->sole();
+        $facilities->positions()->delete();
+
+        $this->patchJson("/api/v1/units/{$facilities->id}", ['name' => 'Logistique', 'system_role' => null])
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Logistique')
+            ->assertJsonPath('data.system_role', 'facilities');
+
+        $this->deleteJson("/api/v1/units/{$facilities->id}")->assertConflict();
+        $this->assertNotSoftDeleted($facilities);
+    }
+
+    /**
+     * D-013 : la base refuse deux unités de même rôle dans une entreprise.
+     */
+    public function test_the_database_refuses_two_units_with_the_same_system_role(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+        $this->postJson('/api/v1/company', ['name' => 'Atelier Nord', 'template' => 'blank'])->assertCreated();
+
+        $this->expectException(QueryException::class);
+        Company::query()->sole()->units()->create(['name' => 'RH bis', 'system_role' => 'hr']);
+    }
+
     public function test_creation_validates_name_and_template(): void
     {
         Sanctum::actingAs(User::factory()->create());
@@ -104,9 +159,11 @@ class CompanyTest extends TestCase
         $this->postJson('/api/v1/company', ['name' => 'Atelier Nord', 'template' => 'blank'])->assertCreated();
         $this->patchJson('/api/v1/company', ['name' => 'Atelier Sud'])->assertOk();
 
-        $entries = AuditEntry::query()->orderBy('id')->get();
+        $entries = AuditEntry::query()->where('event', 'like', 'company.%')->orderBy('id')->get();
 
         $this->assertSame(['company.created', 'company.updated'], $entries->pluck('event')->all());
+        // Les unités système (D-013) sont tracées elles aussi.
+        $this->assertSame(2, AuditEntry::query()->where('event', 'unit.created')->count());
 
         $updated = $entries[1];
         $this->assertSame(ActorType::Ceo, $updated->actor_type);

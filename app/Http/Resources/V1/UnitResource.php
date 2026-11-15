@@ -23,6 +23,11 @@ class UnitResource extends JsonResource
             'name' => $this->name,
             /** Libellé libre du niveau, par exemple « Département » ou « Pôle ». */
             'kind' => $this->kind,
+            /**
+             * Rôle système (`hr`, `facilities`) : unité présente dans toute
+             * entreprise, renommable mais impossible à supprimer. Vide sinon.
+             */
+            'system_role' => $this->system_role?->value,
             /** Couleur d'affichage au format #RRGGBB. */
             'color' => $this->color,
             'sort_order' => $this->sort_order,

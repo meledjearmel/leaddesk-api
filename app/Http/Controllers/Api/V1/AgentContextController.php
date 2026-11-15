@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\AuditKind;
+use App\Models\ActivityContextItem;
 use App\Models\Agent;
 use App\Models\Rule;
 use App\Models\Task;
@@ -97,6 +98,12 @@ class AgentContextController extends ApiController
             ])->values()->all(),
             'people' => $people->values()->all(),
             'contacts' => $contacts,
+            'shared_context' => ActivityContextItem::query()
+                ->where('activity_id', $activity->id)
+                ->orderBy('position')->orderBy('id')
+                ->get()
+                ->map(fn (ActivityContextItem $item): array => ['id' => $item->id, 'title' => $item->title, 'content' => $item->content])
+                ->values()->all(),
             'rules' => $rules->map(fn (Rule $rule): array => [
                 'id' => $rule->id,
                 'title' => $rule->title,

@@ -87,11 +87,16 @@ class UnitController extends ApiController
     /**
      * Mettre une unité à la corbeille.
      *
-     * Refusé (409) tant que l'unité contient des sous-unités ou des postes.
+     * Refusé (409) pour une unité système (RH, Moyens généraux) et tant que
+     * l'unité contient des sous-unités ou des postes.
      */
     public function destroy(Request $request, int $unit): Response
     {
         $model = $this->find($request, $unit);
+
+        if ($model->system_role !== null) {
+            throw new ConflictHttpException('Cette unité existe dans toute entreprise : elle ne peut pas être supprimée.');
+        }
 
         if ($model->children()->exists() || $model->positions()->exists()) {
             throw new ConflictHttpException('Cette unité contient encore des sous-unités ou des postes.');

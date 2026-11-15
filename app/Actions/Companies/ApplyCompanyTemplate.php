@@ -5,6 +5,7 @@ namespace App\Actions\Companies;
 use App\Actions\Agents\AssignAgentToPosition;
 use App\Enums\CompanyTemplate;
 use App\Enums\LifecycleStatus;
+use App\Enums\SystemRole;
 use App\Models\Company;
 use App\Models\Position;
 use App\Models\Unit;
@@ -18,7 +19,7 @@ use RuntimeException;
  * en brouillon, sans modèle IA ni accès.
  *
  * @phpstan-type PositionDefinition array{key: string, title: string, mission: string, responsibilities: list<string>, is_head: bool, reports_to: string|null, agent: array{name: string, bio: string}}
- * @phpstan-type UnitDefinition array{name: string, kind: string, color: string, positions: list<PositionDefinition>, children: list<array<string, mixed>>}
+ * @phpstan-type UnitDefinition array{name: string, kind: string, system_role?: string, color: string, positions: list<PositionDefinition>, children: list<array<string, mixed>>}
  */
 class ApplyCompanyTemplate
 {
@@ -33,7 +34,8 @@ class ApplyCompanyTemplate
     public function handle(Company $company, CompanyTemplate $template): void
     {
         if ($template === CompanyTemplate::Blank) {
-            // RM-02 : une entreprise vierge existe sans unité, poste ni agent.
+            // RM-02 : une entreprise vierge ne reçoit rien du modèle ; seules
+            // les unités système lui sont ajoutées ensuite (D-013).
             return;
         }
 
@@ -68,6 +70,7 @@ class ApplyCompanyTemplate
             'parent_id' => $parent?->id,
             'name' => $definition['name'],
             'kind' => $definition['kind'],
+            'system_role' => isset($definition['system_role']) ? SystemRole::from($definition['system_role']) : null,
             'color' => $definition['color'],
             'sort_order' => $order,
         ]);
