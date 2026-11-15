@@ -46,6 +46,32 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : le PostgreSQL installé sur le poste demande un mot de passe qui n'est pas connu ; SQLite ne bloque pas le travail et Folio fonctionne ainsi.
 - **Alternatives** : PostgreSQL local dès que les identifiants sont fournis (changer trois lignes du `.env`).
 
+## Phase 1 — Socle serveur
+
+### D-008 · Inscription possible depuis l'application
+
+- **Décision** : `POST /api/v1/auth/register` crée un compte et délivre un jeton. L'inscription web du starter kit (Fortify) reste en place.
+- **Raison** : le plan demande un compte CEO dès la phase 1 ; le choix « inscription depuis le site ou depuis l'application » n'est tranché qu'en phase 12. Offrir les deux est le plus simple et ne ferme aucune option.
+- **Alternatives** : inscription sur le site seulement (retirer la route), ou dans l'application seulement.
+
+### D-009 · Vérification de l'e-mail non exigée par l'API
+
+- **Décision** : l'API accepte un compte dont l'e-mail n'est pas encore vérifié.
+- **Raison** : aucun document ne l'exige ; l'exiger bloquerait le premier lancement de l'application.
+- **Alternatives** : middleware `verified` sur les routes métier, à ajouter si Armel le souhaite.
+
+### D-010 · Identifiants entiers et suppression logique
+
+- **Décision** : clés primaires entières ; toutes les données métier utilisent la suppression logique (corbeille) ; les contraintes d'unicité sont des index partiels (`WHERE deleted_at IS NULL`).
+- **Raison** : simplicité ; une donnée à la corbeille ne doit pas bloquer une nouvelle création.
+- **Alternatives** : UUID ou ULID (utile si des données sont un jour créées hors ligne par l'application).
+
+### D-011 · Journal de traçabilité automatique
+
+- **Décision** : table `audit_entries` alimentée par le trait `Audited` des modèles (création, modification avec valeurs avant et après, mise à la corbeille, restauration). Auteur : le CEO connecté, sinon « system » ; un agent se déclarera avec `Audit::actingAs()`. Les champs masqués d'un modèle ne sont jamais écrits dans le journal.
+- **Raison** : RM-34 doit être couvert dès le départ, sans dépendre de la discipline de chaque contrôleur.
+- **Alternatives** : journalisation explicite dans chaque action (plus fine, mais facile à oublier) ; les événements métier qui ne sont pas des modifications de modèle l'utiliseront en complément.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

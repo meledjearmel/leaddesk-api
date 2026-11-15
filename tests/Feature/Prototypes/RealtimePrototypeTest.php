@@ -32,7 +32,7 @@ class RealtimePrototypeTest extends TestCase
         $this->withToken($response->json('token'))
             ->getJson('/api/v1/user')
             ->assertOk()
-            ->assertJsonPath('id', $user->id);
+            ->assertJsonPath('data.id', $user->id);
     }
 
     public function test_wrong_password_is_rejected(): void
