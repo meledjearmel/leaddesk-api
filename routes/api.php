@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AgentController;
 use App\Http\Controllers\Api\V1\AiProviderController;
+use App\Http\Controllers\Api\V1\AuditEntryController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\PositionController;
@@ -58,5 +59,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             ->whereNumber('aiModel')->name('ai-models.update');
         Route::delete('/ai-models/{aiModel}', [AiProviderController::class, 'destroyModel'])
             ->whereNumber('aiModel')->name('ai-models.destroy');
+
+        Route::get('/audit-entries', [AuditEntryController::class, 'index'])->name('audit-entries.index');
     });
 });

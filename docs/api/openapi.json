@@ -28,6 +28,9 @@
         },
         {
             "name": "Mod\u00e8les IA"
+        },
+        {
+            "name": "Journal de tra\u00e7abilit\u00e9"
         }
     ],
     "security": [
@@ -2135,6 +2138,168 @@
                     }
                 }
             }
+        },
+        "/audit-entries": {
+            "get": {
+                "operationId": "v1.audit-entries.index",
+                "description": "Du plus r\u00e9cent au plus ancien, 50 entr\u00e9es par page. Filtrable par\nnature, auteur, \u00e9v\u00e9nement (pr\u00e9fixe, par exemple `agent.`) et sujet.",
+                "summary": "Lire le journal",
+                "tags": [
+                    "Journal de tra\u00e7abilit\u00e9"
+                ],
+                "parameters": [
+                    {
+                        "name": "kind",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/AuditKind"
+                        }
+                    },
+                    {
+                        "name": "actor_type",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/ActorType"
+                        }
+                    },
+                    {
+                        "name": "event",
+                        "in": "query",
+                        "description": "\u00c9v\u00e9nement exact ou pr\u00e9fixe : \u00ab agent. \u00bb renvoie tous les \u00e9v\u00e9nements d'agent.",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[a-z_.]+$",
+                            "maxLength": 64
+                        }
+                    },
+                    {
+                        "name": "subject",
+                        "in": "query",
+                        "description": "Type du sujet en minuscules, par exemple \u00ab agent \u00bb ou \u00ab unit \u00bb.",
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[a-z_]+$",
+                            "maxLength": 40
+                        }
+                    },
+                    {
+                        "name": "subject_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `AuditEntryResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AuditEntryResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "path",
+                                                "per_page",
+                                                "to"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -2145,6 +2310,16 @@
             }
         },
         "schemas": {
+            "ActorType": {
+                "type": "string",
+                "description": "Auteur d'une entr\u00e9e du journal de tra\u00e7abilit\u00e9.\n",
+                "enum": [
+                    "ceo",
+                    "agent",
+                    "system"
+                ],
+                "title": "ActorType"
+            },
             "AgentAiModelResource": {
                 "type": "object",
                 "properties": {
@@ -2378,6 +2553,70 @@
                     "ended_at"
                 ],
                 "title": "AssignmentResource"
+            },
+            "AuditEntryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "actor_type": {
+                        "description": "Auteur : le CEO, un agent ou le syst\u00e8me.",
+                        "$ref": "#/components/schemas/ActorType"
+                    },
+                    "actor_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/AuditKind"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "\u00c9v\u00e9nement, par exemple \u00ab agent.position_changed \u00bb."
+                    },
+                    "subject_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "properties": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "D\u00e9tail de l'\u00e9v\u00e9nement ; pour une modification, les valeurs avant et apr\u00e8s.",
+                        "additionalProperties": {}
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "actor_type",
+                    "actor_id",
+                    "kind",
+                    "event",
+                    "subject_id",
+                    "properties",
+                    "created_at"
+                ],
+                "title": "AuditEntryResource"
+            },
+            "AuditKind": {
+                "type": "string",
+                "description": "Nature d'une entr\u00e9e du journal (RM-34) : consultation, action ou changement.\n",
+                "enum": [
+                    "consultation",
+                    "action",
+                    "change"
+                ],
+                "title": "AuditKind"
             },
             "CompanyResource": {
                 "type": "object",
