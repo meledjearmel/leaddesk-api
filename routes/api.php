@@ -43,6 +43,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::post('/auth/token', [AuthController::class, 'token'])->name('auth.token');
     });
 
+    // Lien de réinitialisation : peu de demandes, pour ne pas inonder une boîte (D-041).
+    Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:3,1')->name('auth.forgot-password');
+
     Route::middleware(['auth:sanctum', ResolveActingAgent::class])->group(function (): void {
         Route::delete('/auth/token', [AuthController::class, 'destroy'])->name('auth.token.destroy');
         Route::get('/user', [AuthController::class, 'show'])->name('user');

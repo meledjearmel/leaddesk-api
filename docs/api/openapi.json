@@ -246,6 +246,61 @@
                 }
             }
         },
+        "/auth/forgot-password": {
+            "post": {
+                "operationId": "v1.auth.forgot-password",
+                "description": "Envoie par e-mail un lien vers la page web de r\u00e9initialisation. La\nr\u00e9ponse (202) est la m\u00eame que l'adresse corresponde ou non \u00e0 un compte,\npour ne rien d\u00e9voiler.",
+                "summary": "Mot de passe oubli\u00e9",
+                "tags": [
+                    "Comptes et jetons"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255
+                                    }
+                                },
+                                "required": [
+                                    "email"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Si un compte correspond \u00e0 cette adresse, un lien de r\u00e9initialisation vient d'y \u00eatre envoy\u00e9."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
         "/user": {
             "get": {
                 "operationId": "v1.user",

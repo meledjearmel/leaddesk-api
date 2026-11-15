@@ -263,6 +263,11 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 
 - **Décision** : `GET /api/v1/realtime` renvoie de quoi se connecter à Reverb : clé publique, hôte, port, `ws` ou `wss`, et le canal privé de l'entreprise (`private-company.{id}`). Le secret reste sur le serveur. L'application n'a donc rien à configurer pour le temps réel.
 - **Diffusion** : toute ressource journalisée est déjà diffusée par `company.changed`, y compris les plans d'aménagement, les décisions et les missions (testé pour `office_plan.created`).
+### D-041 · Mot de passe oublié par l'API
+
+- **Décision** : `POST /api/v1/auth/forgot-password` (sans jeton, 3 demandes par minute) envoie le lien Fortify habituel vers la page web `/reset-password/{token}`. Le nouveau mot de passe se choisit dans le navigateur. La réponse est toujours 202 avec le même message, que l'adresse corresponde à un compte ou non.
+- **Raison** : réutiliser la réinitialisation déjà en place (Fortify) plutôt que d'en refaire une dans l'application ; ne rien dévoiler sur les comptes existants.
+- **À régler en production** : l'envoi d'e-mails (`MAIL_MAILER`, aujourd'hui `log` en local) et `APP_URL`, qui sert à construire le lien.
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

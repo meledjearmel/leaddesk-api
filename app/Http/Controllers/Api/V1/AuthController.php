@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -61,6 +62,26 @@ class AuthController extends ApiController
         }
 
         return $this->tokenResponse($user, $credentials['device_name']);
+    }
+
+    /**
+     * Mot de passe oublié.
+     *
+     * Envoie par e-mail un lien vers la page web de réinitialisation. La
+     * réponse (202) est la même que l'adresse corresponde ou non à un compte,
+     * pour ne rien dévoiler.
+     *
+     * @unauthenticated
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $data = $request->validate(['email' => ['required', 'string', 'email', 'max:255']]);
+
+        Password::sendResetLink(['email' => $data['email']]);
+
+        return response()->json([
+            'message' => 'Si un compte correspond à cette adresse, un lien de réinitialisation vient d\'y être envoyé.',
+        ], Response::HTTP_ACCEPTED);
     }
 
     /**
