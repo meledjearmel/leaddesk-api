@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ActivityTypeController;
 use App\Http\Controllers\Api\V1\AgentController;
 use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuditEntryController;
@@ -64,5 +65,9 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/audit-entries', [AuditEntryController::class, 'index'])->name('audit-entries.index');
 
         Route::apiResource('workflows', WorkflowController::class)->whereNumber('workflow');
+
+        Route::apiResource('activity-types', ActivityTypeController::class)
+            ->parameters(['activity-types' => 'activityType'])
+            ->whereNumber('activityType');
     });
 });

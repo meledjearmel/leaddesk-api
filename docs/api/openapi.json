@@ -34,6 +34,9 @@
         },
         {
             "name": "Workflows"
+        },
+        {
+            "name": "Types d'activit\u00e9"
         }
     ],
     "security": [
@@ -2584,6 +2587,179 @@
                 }
             }
         },
+        "/activity-types": {
+            "get": {
+                "operationId": "v1.activity-types.index",
+                "summary": "Lister les types d'activit\u00e9",
+                "tags": [
+                    "Types d'activit\u00e9"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `ActivityTypeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityTypeResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.activity-types.store",
+                "summary": "Cr\u00e9er un type d'activit\u00e9",
+                "tags": [
+                    "Types d'activit\u00e9"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "`ActivityTypeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityTypeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activity-types/{activityType}": {
+            "get": {
+                "operationId": "v1.activity-types.show",
+                "summary": "Lire un type d'activit\u00e9",
+                "tags": [
+                    "Types d'activit\u00e9"
+                ],
+                "parameters": [
+                    {
+                        "name": "activityType",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ActivityTypeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityTypeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.activity-types.update",
+                "description": "Les changements s'appliquent aussi aux activit\u00e9s en cours (RM-21) :\nelles lisent toujours les champs et les workflows actuels de leur type.",
+                "summary": "Modifier un type d'activit\u00e9",
+                "tags": [
+                    "Types d'activit\u00e9"
+                ],
+                "parameters": [
+                    {
+                        "name": "activityType",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`ActivityTypeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ActivityTypeResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.activity-types.destroy",
+                "summary": "Mettre un type d'activit\u00e9 \u00e0 la corbeille",
+                "tags": [
+                    "Types d'activit\u00e9"
+                ],
+                "parameters": [
+                    {
+                        "name": "activityType",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -2617,6 +2793,127 @@
             }
         },
         "schemas": {
+            "ActivityTypeResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "unit_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Unit\u00e9 responsable par d\u00e9faut des activit\u00e9s de ce type."
+                    },
+                    "activity_workflow_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Workflow suivi par les activit\u00e9s de ce type."
+                    },
+                    "task_workflow_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Workflow suivi par les t\u00e2ches de ces activit\u00e9s."
+                    },
+                    "fields": {
+                        "type": "array",
+                        "description": "Champs propres \u00e0 ce type d'activit\u00e9.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string"
+                                },
+                                "required": {
+                                    "type": "boolean"
+                                },
+                                "options": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "key",
+                                "label",
+                                "type",
+                                "required",
+                                "options"
+                            ]
+                        }
+                    },
+                    "task_templates": {
+                        "type": "array",
+                        "description": "Base de t\u00e2ches propos\u00e9e au responsable, qui la reprend, l'adapte ou la remplace.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "title",
+                                "description"
+                            ]
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "unit_id",
+                    "activity_workflow_id",
+                    "task_workflow_id",
+                    "fields",
+                    "task_templates",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ActivityTypeResource"
+            },
             "ActorType": {
                 "type": "string",
                 "description": "Auteur d'une entr\u00e9e du journal de tra\u00e7abilit\u00e9.\n",

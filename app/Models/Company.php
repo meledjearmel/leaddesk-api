@@ -89,6 +89,14 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<ActivityType, $this>
+     */
+    public function activityTypes(): HasMany
+    {
+        return $this->hasMany(ActivityType::class);
+    }
+
+    /**
      * @return HasMany<AuditEntry, $this>
      */
     public function auditEntries(): HasMany
