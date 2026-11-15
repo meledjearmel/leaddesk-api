@@ -1,0 +1,534 @@
+{
+    "openapi": "3.1.2",
+    "info": {
+        "title": "LeadDesk API",
+        "version": "1.0.0",
+        "description": "API de LeadDesk, consomm\u00e9e par l'application de bureau. Authentification : jeton Sanctum d'un appareil (`Authorization: Bearer`). Toutes les donn\u00e9es m\u00e9tier sont celles de l'entreprise du compte connect\u00e9 : une ressource d'une autre entreprise r\u00e9pond 404."
+    },
+    "servers": [
+        {
+            "url": "https://leaddesk.test/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Comptes et jetons"
+        },
+        {
+            "name": "Entreprise"
+        }
+    ],
+    "security": [
+        {
+            "http": []
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "operationId": "v1.auth.register",
+                "description": "Cr\u00e9e le compte du CEO et d\u00e9livre le jeton de l'appareil.",
+                "summary": "Cr\u00e9er un compte",
+                "tags": [
+                    "Comptes et jetons"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "device_name": {
+                                        "type": "string",
+                                        "maxLength": 100
+                                    }
+                                },
+                                "required": [
+                                    "device_name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "company"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "token",
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/auth/token": {
+            "post": {
+                "operationId": "v1.auth.token",
+                "description": "D\u00e9livre un jeton pour l'appareil. Le message d'erreur est le m\u00eame que\nl'e-mail soit inconnu ou le mot de passe faux.",
+                "summary": "Se connecter",
+                "tags": [
+                    "Comptes et jetons"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "device_name": {
+                                        "type": "string",
+                                        "maxLength": 100
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "device_name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "company"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "token",
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            },
+            "delete": {
+                "operationId": "v1.auth.token.destroy",
+                "description": "R\u00e9voque le jeton de l'appareil appelant ; les autres appareils restent connect\u00e9s.",
+                "summary": "Se d\u00e9connecter",
+                "tags": [
+                    "Comptes et jetons"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "operationId": "v1.user",
+                "summary": "Lire le compte connect\u00e9",
+                "tags": [
+                    "Comptes et jetons"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`UserResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "company"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/company": {
+            "get": {
+                "operationId": "v1.company.show",
+                "description": "R\u00e9pond 404 tant que le compte n'a pas cr\u00e9\u00e9 son entreprise.",
+                "summary": "Lire l'entreprise",
+                "tags": [
+                    "Entreprise"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`CompanyResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CompanyResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.company.store",
+                "description": "Un compte correspond \u00e0 une seule entreprise (RM-01) : un second appel r\u00e9pond 409.\nUne entreprise vierge est cr\u00e9\u00e9e sans unit\u00e9, poste ni agent (RM-02).",
+                "summary": "Cr\u00e9er l'entreprise",
+                "tags": [
+                    "Entreprise"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    },
+                                    "template": {
+                                        "$ref": "#/components/schemas/CompanyTemplate"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "template"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`CompanyResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CompanyResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1.company.update",
+                "summary": "Renommer l'entreprise",
+                "tags": [
+                    "Entreprise"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`CompanyResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CompanyResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "http": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        },
+        "schemas": {
+            "CompanyResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "template": {
+                        "$ref": "#/components/schemas/CompanyTemplate"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "template",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "CompanyResource"
+            },
+            "CompanyTemplate": {
+                "type": "string",
+                "description": "Configuration de d\u00e9part d'une entreprise (RM-02).\n",
+                "enum": [
+                    "blank",
+                    "studio"
+                ],
+                "title": "CompanyTemplate"
+            },
+            "UserResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "company": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/CompanyResource"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "email_verified_at"
+                ],
+                "title": "UserResource"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

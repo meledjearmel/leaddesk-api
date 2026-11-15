@@ -26,7 +26,7 @@ Laravel 13, PHP 8.4+, PostgreSQL (SQLite en mémoire pour les tests, job CI Post
 
 ## Contrat d'API
 
-`docs/api/` est la **source de vérité** de l'API `/api/v1` consommée par l'application. Toute évolution d'une route met à jour le contrat **dans le même commit**. L'application s'y conforme.
+`docs/api/openapi.json` est la **source de vérité** de l'API `/api/v1` consommée par l'application. Il est généré par Scramble : après toute évolution d'une route, lancer `php artisan scramble:export` et commiter le fichier **dans le même commit** (un test échoue sinon). Version interactive : `/docs/api` en local. Conventions et temps réel : `docs/api/README.md`.
 
 ## Vocabulaire
 
@@ -66,6 +66,7 @@ php artisan migrate
 composer run dev                 # serveur, file, Vite
 php artisan reverb:start         # temps réel
 php artisan test                 # tests
+php artisan scramble:export      # régénère docs/api/openapi.json
 vendor/bin/pint                  # style
 vendor/bin/phpstan analyse       # Larastan
 npm run check && npm run types:check

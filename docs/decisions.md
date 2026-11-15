@@ -10,11 +10,11 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : demandé explicitement dans la mission ; le plan ne proposait le dépôt unique (`server/`, `desktop/`) qu'à titre de proposition.
 - **Alternatives** : dépôt unique avec `server/` et `desktop/`.
 
-### D-002 · Contrat d'API en Markdown
+### D-002 · Contrat d'API généré par Scramble
 
-- **Décision** : `docs/api/README.md` rédigé à la main, source de vérité.
-- **Raison** : le plus simple et réversible tant que l'API est petite ; lisible par les deux dépôts sans outillage.
-- **Alternatives** : OpenAPI généré (Scramble, comme Folio) — à reconsidérer quand l'API grossit.
+- **Décision** : `docs/api/openapi.json` (OpenAPI 3.1) est généré depuis le code par Scramble (`php artisan scramble:export`) et commité ; `docs/api/README.md` garde les conventions et le temps réel. Un test échoue si le contrat commité ne correspond plus au code.
+- **Raison** : demandé par Armel le 15 novembre 2026 (la première version était un Markdown rédigé à la main) ; même outil que Folio ; le contrat ne peut plus diverger du code.
+- **Alternatives** : Markdown rédigé à la main (abandonné).
 
 ### D-003 · Tests sur SQLite en mémoire, job CI PostgreSQL
 

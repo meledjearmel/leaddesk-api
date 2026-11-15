@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Actions\Fortify\CreateNewUser;
 use App\Http\Resources\V1\UserResource;
 use App\Models\User;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,8 +15,16 @@ use Illuminate\Validation\ValidationException;
 /**
  * Comptes et jetons de l'application de bureau.
  */
+#[Group('Comptes et jetons', weight: 1)]
 class AuthController extends ApiController
 {
+    /**
+     * Créer un compte.
+     *
+     * Crée le compte du CEO et délivre le jeton de l'appareil.
+     *
+     * @unauthenticated
+     */
     public function register(Request $request, CreateNewUser $createUser): JsonResponse
     {
         $device = $request->validate(['device_name' => ['required', 'string', 'max:100']]);
@@ -27,6 +36,14 @@ class AuthController extends ApiController
         return $this->tokenResponse($user, $device['device_name'], Response::HTTP_CREATED);
     }
 
+    /**
+     * Se connecter.
+     *
+     * Délivre un jeton pour l'appareil. Le message d'erreur est le même que
+     * l'e-mail soit inconnu ou le mot de passe faux.
+     *
+     * @unauthenticated
+     */
     public function token(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -46,13 +63,18 @@ class AuthController extends ApiController
         return $this->tokenResponse($user, $credentials['device_name']);
     }
 
+    /**
+     * Lire le compte connecté.
+     */
     public function show(Request $request): UserResource
     {
         return new UserResource($this->user($request)->load('company'));
     }
 
     /**
-     * Révoque le jeton de l'appareil qui fait la demande.
+     * Se déconnecter.
+     *
+     * Révoque le jeton de l'appareil appelant ; les autres appareils restent connectés.
      */
     public function destroy(Request $request): Response
     {
