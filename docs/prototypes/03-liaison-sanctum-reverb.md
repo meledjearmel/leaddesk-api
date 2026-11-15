@@ -1,6 +1,6 @@
 # Prototype 3 — Liaison application–serveur (Sanctum + Reverb), côté serveur
 
-**Date :** 15 novembre 2026 · **Code :** `prototypes/realtime/` · **Compte rendu complet et mesures :** `docs/prototypes/03-liaison-sanctum-reverb.md` du dépôt `leaddesk-app`.
+**Date :** 15 novembre 2026 · **Code :** `prototypes/Realtime/` · **Compte rendu complet et mesures :** `docs/prototypes/03-liaison-sanctum-reverb.md` du dépôt `leaddesk-app`.
 
 ## Ce qui a été construit
 
