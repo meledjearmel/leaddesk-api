@@ -200,6 +200,15 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Limite** : l'hôte applique ces permissions ; le serveur ne peut pas empêcher un appel local qu'il ne voit pas. Les accès au serveur restent, eux, contrôlés côté serveur.
 - **Alternatives** : permissions par agent ; liste blanche de commandes.
 
+## Phase 5 — Bureau vivant (partie serveur)
+
+### D-032 · Réglages de l'entreprise et horloge du bureau (RM-50, RM-51)
+
+- **Décision** : les réglages synchronisés vivent dans `companies.settings` ; seules les valeurs changées par le CEO y sont stockées, les autres prennent la valeur par défaut de `config/leaddesk.php` (60 minutes réelles par journée simulée, bornes 5 à 1440). `GET /company/settings` renvoie aussi l'horloge : le temps simulé se calcule depuis l'heure Unix et le réglage, il est donc identique sur tous les ordinateurs et rien n'est stocké. Seul le CEO modifie les réglages.
+- **Raison** : RM-50 (réglable, jamais en dur) ; RM-51 (le temps simulé ne touche à aucune donnée) ; un calcul déterministe évite toute dérive entre ordinateurs.
+- **Limite** : changer le rapport fait sauter l'heure simulée affichée ; c'est sans conséquence puisqu'elle ne sert qu'à l'ambiance.
+- **Alternatives** : une heure de départ stockée à chaque changement (continuité visuelle, mais un état de plus à synchroniser) ; une table de réglages clé-valeur.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

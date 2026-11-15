@@ -16,6 +16,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Réglages de l'entreprise : valeurs par défaut
+    |--------------------------------------------------------------------------
+    |
+    | Chaque entreprise peut changer ces valeurs (CEO seulement). Horloge du
+    | bureau : une journée simulée de 24 h dure 60 minutes réelles par
+    | défaut (RM-50) ; le temps simulé ne sert qu'à l'ambiance (RM-51).
+    |
+    */
+
+    'company_settings' => [
+        'simulated_day_minutes' => (int) env('LEADDESK_SIMULATED_DAY_MINUTES', 60),
+    ],
+
+    'simulated_day_minutes_bounds' => [5, 1440],
+
+    /*
+    |--------------------------------------------------------------------------
     | Outils locaux des agents et mode par défaut
     |--------------------------------------------------------------------------
     |

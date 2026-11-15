@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuditEntryController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\CompanySettingsController;
 use App\Http\Controllers\Api\V1\CostController;
 use App\Http\Controllers\Api\V1\DecisionController;
 use App\Http\Controllers\Api\V1\DeviceController;
@@ -45,6 +46,8 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/company', [CompanyController::class, 'show'])->name('company.show');
         Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+        Route::get('/company/settings', [CompanySettingsController::class, 'show'])->name('company.settings.show');
+        Route::patch('/company/settings', [CompanySettingsController::class, 'update'])->name('company.settings.update');
 
         Route::apiResource('units', UnitController::class)->whereNumber('unit');
         Route::post('/units/{unit}/restore', [UnitController::class, 'restore'])->whereNumber('unit')->name('units.restore');
