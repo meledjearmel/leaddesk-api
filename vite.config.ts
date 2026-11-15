@@ -66,6 +66,8 @@ export default defineConfig({
         ignorePatterns: [
             '.github/**',
             'composer.json',
+            // Contrat généré par Scramble : sa mise en forme est celle de l'outil.
+            'docs/api/openapi.json',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
         ],
