@@ -81,6 +81,14 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<Workflow, $this>
+     */
+    public function workflows(): HasMany
+    {
+        return $this->hasMany(Workflow::class);
+    }
+
+    /**
      * @return HasMany<AuditEntry, $this>
      */
     public function auditEntries(): HasMany

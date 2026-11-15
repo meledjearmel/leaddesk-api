@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\UnitController;
+use App\Http\Controllers\Api\V1\WorkflowController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,5 +62,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             ->whereNumber('aiModel')->name('ai-models.destroy');
 
         Route::get('/audit-entries', [AuditEntryController::class, 'index'])->name('audit-entries.index');
+
+        Route::apiResource('workflows', WorkflowController::class)->whereNumber('workflow');
     });
 });

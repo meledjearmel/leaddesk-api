@@ -31,6 +31,9 @@
         },
         {
             "name": "Journal de tra\u00e7abilit\u00e9"
+        },
+        {
+            "name": "Workflows"
         }
     ],
     "security": [
@@ -2301,6 +2304,286 @@
                 }
             }
         },
+        "/workflows": {
+            "get": {
+                "operationId": "v1.workflows.index",
+                "description": "Filtrable par port\u00e9e : `activity` ou `task`.",
+                "summary": "Lister les workflows",
+                "tags": [
+                    "Workflows"
+                ],
+                "parameters": [
+                    {
+                        "name": "scope",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/WorkflowScope"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `WorkflowResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WorkflowResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.workflows.store",
+                "description": "Les \u00e9tapes sont donn\u00e9es dans l'ordre du parcours ; la premi\u00e8re est\nl'\u00e9tape de d\u00e9part.",
+                "summary": "Cr\u00e9er un workflow",
+                "tags": [
+                    "Workflows"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    },
+                                    "scope": {
+                                        "description": "Port\u00e9e du workflow ; elle ne change plus ensuite.",
+                                        "$ref": "#/components/schemas/WorkflowScope"
+                                    },
+                                    "steps": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string",
+                                                    "maxLength": 80
+                                                },
+                                                "category": {
+                                                    "$ref": "#/components/schemas/StepCategory"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "category"
+                                            ]
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 30
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "scope",
+                                    "steps"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`WorkflowResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WorkflowResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/workflows/{workflow}": {
+            "get": {
+                "operationId": "v1.workflows.show",
+                "summary": "Lire un workflow",
+                "tags": [
+                    "Workflows"
+                ],
+                "parameters": [
+                    {
+                        "name": "workflow",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`WorkflowResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WorkflowResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.workflows.update",
+                "description": "Quand `steps` est fourni, il remplace le parcours : une \u00e9tape envoy\u00e9e\navec son `id` est conserv\u00e9e (renomm\u00e9e, d\u00e9plac\u00e9e), une \u00e9tape sans `id`\nest cr\u00e9\u00e9e, une \u00e9tape absente est retir\u00e9e.",
+                "summary": "Modifier un workflow",
+                "tags": [
+                    "Workflows"
+                ],
+                "parameters": [
+                    {
+                        "name": "workflow",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    },
+                                    "steps": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Identifiant d'une \u00e9tape existante de ce workflow, pour la conserver."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "maxLength": 80
+                                                },
+                                                "category": {
+                                                    "$ref": "#/components/schemas/StepCategory"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "category"
+                                            ]
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 30,
+                                        "uniqueItems": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`WorkflowResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/WorkflowResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.workflows.destroy",
+                "summary": "Mettre un workflow \u00e0 la corbeille",
+                "tags": [
+                    "Workflows"
+                ],
+                "parameters": [
+                    {
+                        "name": "workflow",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -2776,6 +3059,18 @@
                 ],
                 "title": "PositionResource"
             },
+            "StepCategory": {
+                "type": "string",
+                "description": "Sens d'une \u00e9tape de workflow. Le libell\u00e9 de l'\u00e9tape est libre ; la cat\u00e9gorie permet au logiciel de savoir o\u00f9 en est le travail.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
+                "enum": [
+                    "todo",
+                    "in_progress",
+                    "review",
+                    "done",
+                    "cancelled"
+                ],
+                "title": "StepCategory"
+            },
             "UnitResource": {
                 "type": "object",
                 "properties": {
@@ -2882,6 +3177,86 @@
                     "email_verified_at"
                 ],
                 "title": "UserResource"
+            },
+            "WorkflowResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "scope": {
+                        "description": "Ce que le workflow fait avancer : des activit\u00e9s ou des t\u00e2ches.",
+                        "$ref": "#/components/schemas/WorkflowScope"
+                    },
+                    "steps": {
+                        "type": "array",
+                        "description": "\u00c9tapes dans l'ordre du parcours ; la premi\u00e8re est l'\u00e9tape de d\u00e9part.",
+                        "items": {
+                            "$ref": "#/components/schemas/WorkflowStepResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "scope",
+                    "steps",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "WorkflowResource"
+            },
+            "WorkflowScope": {
+                "type": "string",
+                "description": "Ce qu'un workflow fait avancer : des activit\u00e9s ou des t\u00e2ches (RM-18).\n",
+                "enum": [
+                    "activity",
+                    "task"
+                ],
+                "title": "WorkflowScope"
+            },
+            "WorkflowStepResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Libell\u00e9 libre de l'\u00e9tape."
+                    },
+                    "category": {
+                        "description": "Sens de l'\u00e9tape pour le logiciel.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
+                        "$ref": "#/components/schemas/StepCategory"
+                    },
+                    "sort_order": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "category",
+                    "sort_order"
+                ],
+                "title": "WorkflowStepResource"
             }
         },
         "responses": {

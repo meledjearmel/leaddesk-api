@@ -117,6 +117,20 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : un seul mécanisme couvre toutes les ressources présentes et futures ; aucune donnée métier ne transite par le canal ; le temps réel ne peut pas diverger de l'API.
 - **Alternatives** : un événement par ressource avec sa charge utile complète (moins d'appels, mais deux formats à tenir à jour).
 
+### D-019 · Répartition du travail entre deux sessions
+
+- **Décision** : le 15 novembre 2026, Armel a réparti le travail : cette session reste sur `leaddesk-api` et enchaîne les parties serveur des phases 3 puis 4 ; une autre session tient `leaddesk-app` (elle y a déjà construit l'écran du bureau vivant) et y branche l'API d'après le contrat `docs/api/`.
+- **Raison** : deux sessions qui écrivent dans le même dépôt risquent de s'écraser.
+- **Conséquence** : les critères de fin des phases 2 et suivantes, qui demandent un parcours complet dans l'application, se valident quand les deux côtés sont prêts. Le journal distingue ce qui est fait côté serveur.
+
+## Phase 3 — Travail, règles et décisions (partie serveur)
+
+### D-020 · Workflows : étapes libres, catégories fixes
+
+- **Décision** : un workflow a une portée (`activity` ou `task`, RM-18) qui ne change plus, et une liste ordonnée d'étapes aux libellés libres. Chaque étape porte une catégorie parmi cinq (`todo`, `in_progress`, `review`, `done`, `cancelled`) qui dit au logiciel où en est le travail. La première étape est l'étape de départ. Les passages d'une étape à l'autre sont libres, sauf l'entrée dans une étape `done` d'une tâche, réservée à la confirmation du responsable (RM-19).
+- **Raison** : le plan laisse « statuts et champs configurables détaillés » à trancher en phase 3. Les libellés et le nombre d'étapes restent configurables (RM-03) ; cinq catégories suffisent pour le Dashboard, le bureau et les garde-fous, sans coder de statut en dur.
+- **Alternatives** : transitions configurables étape par étape (plus riche, à ajouter si le besoin apparaît) ; statuts fixes (contraire à RM-03).
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).
