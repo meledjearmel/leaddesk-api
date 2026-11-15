@@ -231,6 +231,14 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : D-017 reste à confirmer par Armel ; un réglage rend la réponse indifférente au code : si le « CEO virtuel » devient un poste distinct, il suffit de le choisir.
 - **Alternatives** : mission créée directement comme activité (mélange la demande et son organisation) ; destinataire choisi à chaque mission.
 
+### D-036 · Plans d'aménagement sur le serveur
+
+- **Décision** : table `office_plans` (version croissante par entreprise, état `proposed` / `accepted` / `rejected` / `superseded` / `stale`, plan au format `OfficePlan.toJson()` de l'application, poste et agent qui proposent, plan de départ, motif, commentaire de décision, `softDeletes`). Un seul plan en vigueur par entreprise (index unique partiel). Routes `/api/v1/office/…` : catalogue des salles, départements, plan en vigueur, enregistrement par le CEO, vérification, liste, accepter, refuser.
+- **Règles** (D-012 de `leaddesk-app`) : seul le CEO accepte, refuse ou dessine (403 pour un agent) ; un plan dessiné par le CEO entre en vigueur sans approbation ; l'ancien plan passe « remplacé » ; toute proposition en attente passe « périmée » quand le plan en vigueur change ; une proposition est revalidée contre l'organisation actuelle avant d'être acceptée.
+- **Mêmes règles que l'application** : `OfficePlanValidator` reprend `OfficePlan.validate` (mêmes contrôles, même ordre, mêmes messages). Les cas de `tests/Fixtures/office/validation-cases.json` sont calculés par l'application et rejoués ici. Le catalogue `resources/office/room-types.json` est exporté de `room_catalog.dart` ; l'application vérifie qu'il est identique.
+- **Départements** : les unités de premier niveau ; l'effectif compte les postes de l'unité et de ses sous-unités. Dans un plan, `department` est l'identifiant de l'unité, en texte.
+- **Journal** : chaque changement d'état est tracé (RM-34) et diffusé par Reverb ; le plan lui-même n'est pas recopié dans le journal.
+- **Alternatives** : stocker le plan dans les réglages de l'entreprise (pas d'historique ni de propositions) ; passer par les décisions génériques (`Decision`) dès maintenant, ce qui sera fait par le MCP à l'étape 3.
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

@@ -39,6 +39,9 @@
             "name": "Types d'activit\u00e9"
         },
         {
+            "name": "Am\u00e9nagement"
+        },
+        {
             "name": "Projets"
         },
         {
@@ -2911,6 +2914,613 @@
                 "responses": {
                     "204": {
                         "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/room-types": {
+            "get": {
+                "operationId": "v1.office.room-types",
+                "description": "`scope` vaut `department` (salle d'un seul d\u00e9partement) ou `shared`\n(lieu commun). Postes d'une salle : `seats_per_row \u00d7 \u230arows / 2\u230b`.",
+                "summary": "Catalogue des types de salle",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/departments": {
+            "get": {
+                "operationId": "v1.office.departments",
+                "description": "Les unit\u00e9s de premier niveau, avec leur effectif (postes de l'unit\u00e9 et de\nses sous-unit\u00e9s) : c'est contre elles que tout plan est valid\u00e9.",
+                "summary": "D\u00e9partements d'am\u00e9nagement",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plan": {
+            "get": {
+                "operationId": "v1.office.plan",
+                "description": "`data` est vide tant qu'aucun plan n'a \u00e9t\u00e9 accept\u00e9 : l'application\nutilise alors son am\u00e9nageur automatique.",
+                "summary": "Plan en vigueur",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "anyOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/OfficePlanResource"
+                                                },
+                                                {
+                                                    "type": "null"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.office.plan.save",
+                "description": "Le plan entre en vigueur sans approbation ; les propositions en attente\ndeviennent p\u00e9rim\u00e9es. Refus\u00e9 (422, `errors.layout`) si une r\u00e8gle n'est pas\nrespect\u00e9e ; r\u00e9serv\u00e9 au CEO (403 pour un agent).",
+                "summary": "Enregistrer le plan dessin\u00e9 par le CEO",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "layout": {
+                                        "type": "object",
+                                        "properties": {
+                                            "version": {
+                                                "type": "integer",
+                                                "enum": [
+                                                    "1"
+                                                ]
+                                            },
+                                            "cols": {
+                                                "type": "integer",
+                                                "minimum": 1,
+                                                "maximum": 200
+                                            },
+                                            "rows": {
+                                                "type": "integer",
+                                                "minimum": 1,
+                                                "maximum": 200
+                                            },
+                                            "rooms": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "maxLength": 64
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "maxLength": 64
+                                                        },
+                                                        "department": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "maxLength": 64
+                                                        },
+                                                        "name": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "maxLength": 80
+                                                        },
+                                                        "x": {
+                                                            "type": "integer",
+                                                            "minimum": -200,
+                                                            "maximum": 200
+                                                        },
+                                                        "y": {
+                                                            "type": "integer",
+                                                            "minimum": -200,
+                                                            "maximum": 200
+                                                        },
+                                                        "cols": {
+                                                            "type": "integer",
+                                                            "minimum": 1,
+                                                            "maximum": 200
+                                                        },
+                                                        "rows": {
+                                                            "type": "integer",
+                                                            "minimum": 1,
+                                                            "maximum": 200
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "type",
+                                                        "x",
+                                                        "y",
+                                                        "cols",
+                                                        "rows"
+                                                    ]
+                                                },
+                                                "maxItems": 300
+                                            }
+                                        },
+                                        "required": [
+                                            "cols",
+                                            "rows",
+                                            "rooms"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "layout"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`OfficePlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OfficePlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plan/check": {
+            "post": {
+                "operationId": "v1.office.plan.check",
+                "description": "Renvoie la liste des probl\u00e8mes, vide si le plan est valable.",
+                "summary": "V\u00e9rifier un plan sans l'enregistrer",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "layout": {
+                                        "type": "object",
+                                        "properties": {
+                                            "version": {
+                                                "type": "integer",
+                                                "enum": [
+                                                    "1"
+                                                ]
+                                            },
+                                            "cols": {
+                                                "type": "integer",
+                                                "minimum": 1,
+                                                "maximum": 200
+                                            },
+                                            "rows": {
+                                                "type": "integer",
+                                                "minimum": 1,
+                                                "maximum": 200
+                                            },
+                                            "rooms": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "maxLength": 64
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "maxLength": 64
+                                                        },
+                                                        "department": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "maxLength": 64
+                                                        },
+                                                        "name": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "maxLength": 80
+                                                        },
+                                                        "x": {
+                                                            "type": "integer",
+                                                            "minimum": -200,
+                                                            "maximum": 200
+                                                        },
+                                                        "y": {
+                                                            "type": "integer",
+                                                            "minimum": -200,
+                                                            "maximum": 200
+                                                        },
+                                                        "cols": {
+                                                            "type": "integer",
+                                                            "minimum": 1,
+                                                            "maximum": 200
+                                                        },
+                                                        "rows": {
+                                                            "type": "integer",
+                                                            "minimum": 1,
+                                                            "maximum": 200
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "type",
+                                                        "x",
+                                                        "y",
+                                                        "cols",
+                                                        "rows"
+                                                    ]
+                                                },
+                                                "maxItems": 300
+                                            }
+                                        },
+                                        "required": [
+                                            "cols",
+                                            "rows",
+                                            "rooms"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "layout"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "problems": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "problems"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plans": {
+            "get": {
+                "operationId": "v1.office.plans.index",
+                "description": "Du plus r\u00e9cent au plus ancien ; `status` filtre, par exemple\n`status=proposed` pour les propositions en attente.",
+                "summary": "Lister les plans",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/OfficePlanStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `OfficePlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OfficePlanResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plans/{plan}": {
+            "get": {
+                "operationId": "v1.office.plans.show",
+                "summary": "Lire un plan",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`OfficePlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OfficePlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plans/{plan}/accept": {
+            "post": {
+                "operationId": "v1.office.plans.accept",
+                "description": "Elle devient le plan en vigueur ; l'ancien est remplac\u00e9 et les autres\npropositions deviennent p\u00e9rim\u00e9es. Revalid\u00e9e contre l'organisation\nactuelle (422) ; 409 si elle n'est plus en attente ; r\u00e9serv\u00e9 au CEO.",
+                "summary": "Accepter une proposition",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "comment": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 2000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`OfficePlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OfficePlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/office/plans/{plan}/reject": {
+            "post": {
+                "operationId": "v1.office.plans.reject",
+                "description": "409 si elle n'est plus en attente ; r\u00e9serv\u00e9 au CEO.",
+                "summary": "Refuser une proposition",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "comment": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 2000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`OfficePlanResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/OfficePlanResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -9042,6 +9652,115 @@
                     "active"
                 ],
                 "title": "LifecycleStatus"
+            },
+            "OfficePlanResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "version": {
+                        "type": "integer",
+                        "description": "Num\u00e9ro de version, croissant dans l'entreprise."
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "`proposed`, `accepted` (en vigueur), `rejected`, `superseded` (remplac\u00e9) ou `stale` (p\u00e9rim\u00e9).",
+                        "enum": [
+                            "proposed",
+                            "accepted",
+                            "rejected",
+                            "superseded",
+                            "stale"
+                        ]
+                    },
+                    "layout": {
+                        "type": "object",
+                        "description": "Plan au format `OfficePlan.toJson()` de l'application : `cols`,\n`rows` et `rooms` (`id`, `type`, `department`, `name`, `x`, `y`, `cols`, `rows`).\n`department` est l'identifiant (texte) d'une unit\u00e9 de premier niveau.",
+                        "additionalProperties": {}
+                    },
+                    "proposed_by_position_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Poste et agent qui ont propos\u00e9 le plan ; vides quand le CEO l'a dessin\u00e9."
+                    },
+                    "proposed_by_agent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "based_on_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Plan en vigueur au moment de la proposition, pour la comparaison."
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Motif donn\u00e9 par le poste qui propose."
+                    },
+                    "decision_comment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "decided_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "version",
+                    "status",
+                    "layout",
+                    "proposed_by_position_id",
+                    "proposed_by_agent_id",
+                    "based_on_id",
+                    "reason",
+                    "decision_comment",
+                    "decided_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "OfficePlanResource"
+            },
+            "OfficePlanStatus": {
+                "type": "string",
+                "description": "\u00c9tat d'un plan d'am\u00e9nagement (D-035).\n| |\n|---|\n| `proposed` <br/> Propos\u00e9 par un poste des Moyens g\u00e9n\u00e9raux, en attente du CEO. |\n| `accepted` <br/> Plan en vigueur : un seul par entreprise. |\n| `rejected` <br/>  |\n| `superseded` <br/> Ancien plan en vigueur, remplac\u00e9 par un plus r\u00e9cent. |\n| `stale` <br/> Proposition d\u00e9pass\u00e9e : le plan a chang\u00e9 pendant qu'elle attendait (D-012). |",
+                "enum": [
+                    "proposed",
+                    "accepted",
+                    "rejected",
+                    "superseded",
+                    "stale"
+                ],
+                "title": "OfficePlanStatus"
             },
             "PositionResource": {
                 "type": "object",

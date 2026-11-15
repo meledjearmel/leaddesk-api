@@ -38,16 +38,13 @@ class CompanyOfficeDepartments
             $headcounts[$root->id] = ($headcounts[$root->id] ?? 0) + ($positions[$unit->id] ?? 0);
         }
 
-        return $units
-            ->whereNull('parent_id')
-            ->sortBy([['sort_order', 'asc'], ['id', 'asc']])
-            ->map(fn (Unit $unit): OfficeDepartment => new OfficeDepartment(
-                (string) $unit->id,
-                $unit->name,
-                $headcounts[$unit->id] ?? 0,
-            ))
-            ->values()
-            ->all();
+        $departments = [];
+
+        foreach ($units->whereNull('parent_id')->sortBy([['sort_order', 'asc'], ['id', 'asc']]) as $unit) {
+            $departments[] = new OfficeDepartment((string) $unit->id, $unit->name, $headcounts[$unit->id] ?? 0);
+        }
+
+        return $departments;
     }
 
     /**

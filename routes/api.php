@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\DecisionController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\ExecutionController;
 use App\Http\Controllers\Api\V1\MissionController;
+use App\Http\Controllers\Api\V1\OfficePlanController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RuleController;
@@ -134,6 +135,17 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post('/reply', 'reply')->name('reply');
         });
 
+        Route::controller(OfficePlanController::class)->prefix('office')->name('office.')->group(function (): void {
+            Route::get('/room-types', 'roomTypes')->name('room-types');
+            Route::get('/departments', 'departments')->name('departments');
+            Route::get('/plan', 'current')->name('plan');
+            Route::put('/plan', 'save')->name('plan.save');
+            Route::post('/plan/check', 'check')->name('plan.check');
+            Route::get('/plans', 'index')->name('plans.index');
+            Route::get('/plans/{plan}', 'show')->whereNumber('plan')->name('plans.show');
+            Route::post('/plans/{plan}/accept', 'accept')->whereNumber('plan')->name('plans.accept');
+            Route::post('/plans/{plan}/reject', 'reject')->whereNumber('plan')->name('plans.reject');
+        });
         Route::apiResource('devices', DeviceController::class)->except('show')->whereNumber('device');
         Route::post('/devices/{device}/heartbeat', [DeviceController::class, 'heartbeat'])->whereNumber('device')->name('devices.heartbeat');
 

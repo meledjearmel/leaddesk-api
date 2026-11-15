@@ -15,7 +15,66 @@ namespace App\Office;
  */
 class OfficePlanValidator
 {
+    public const int MAX_SIDE = 200;
+
+    public const int MAX_ROOMS = 300;
+
     public function __construct(private readonly RoomCatalog $catalog) {}
+
+    /**
+     * Règles de forme d'un plan, pour la validation d'une requête.
+     *
+     * @return array<string, list<string>>
+     */
+    public static function shapeRules(string $prefix = 'layout'): array
+    {
+        $side = 'between:1,'.self::MAX_SIDE;
+
+        return [
+            $prefix => ['required', 'array'],
+            "{$prefix}.version" => ['sometimes', 'integer', 'in:1'],
+            "{$prefix}.cols" => ['required', 'integer', $side],
+            "{$prefix}.rows" => ['required', 'integer', $side],
+            "{$prefix}.rooms" => ['present', 'array', 'list', 'max:'.self::MAX_ROOMS],
+            "{$prefix}.rooms.*" => ['array'],
+            "{$prefix}.rooms.*.id" => ['required', 'string', 'max:64'],
+            "{$prefix}.rooms.*.type" => ['required', 'string', 'max:64'],
+            "{$prefix}.rooms.*.department" => ['sometimes', 'nullable', 'string', 'max:64'],
+            "{$prefix}.rooms.*.name" => ['sometimes', 'nullable', 'string', 'max:80'],
+            "{$prefix}.rooms.*.x" => ['required', 'integer', 'between:-'.self::MAX_SIDE.','.self::MAX_SIDE],
+            "{$prefix}.rooms.*.y" => ['required', 'integer', 'between:-'.self::MAX_SIDE.','.self::MAX_SIDE],
+            "{$prefix}.rooms.*.cols" => ['required', 'integer', $side],
+            "{$prefix}.rooms.*.rows" => ['required', 'integer', $side],
+        ];
+    }
+
+    /**
+     * Plan nettoyé : seuls les champs connus, dans l'ordre de `toJson()`.
+     *
+     * @param  array<string, mixed>  $input
+     * @return Layout
+     */
+    public static function normalize(array $input): array
+    {
+        /** @var list<array<string, mixed>> $rooms */
+        $rooms = $input['rooms'];
+
+        return [
+            'version' => 1,
+            'cols' => (int) $input['cols'],
+            'rows' => (int) $input['rows'],
+            'rooms' => array_map(fn (array $room): array => array_filter([
+                'id' => (string) $room['id'],
+                'type' => (string) $room['type'],
+                'department' => isset($room['department']) ? (string) $room['department'] : null,
+                'name' => isset($room['name']) ? (string) $room['name'] : null,
+                'x' => (int) $room['x'],
+                'y' => (int) $room['y'],
+                'cols' => (int) $room['cols'],
+                'rows' => (int) $room['rows'],
+            ], fn (mixed $value): bool => $value !== null), $rooms),
+        ];
+    }
 
     /**
      * Problèmes du plan, en français ; liste vide si le plan est valable.
@@ -49,8 +108,8 @@ class OfficePlanValidator
                 continue;
             }
             if ($room['x'] < 0 || $room['y'] < 0
-                || $room['x'] + $room['cols'] > $layout['cols']
-                || $room['y'] + $room['rows'] > $layout['rows']) {
+                || $layout['cols'] < $room['x'] + $room['cols']
+                || $layout['rows'] < $room['y'] + $room['rows']) {
                 $problems[] = "{$label} dépasse du plan.";
             }
             if ($room['cols'] < $type['min_cols'] || $room['rows'] < $type['min_rows']) {

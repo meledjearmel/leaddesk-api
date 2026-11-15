@@ -57,6 +57,14 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<OfficePlan, $this>
+     */
+    public function officePlans(): HasMany
+    {
+        return $this->hasMany(OfficePlan::class);
+    }
+
+    /**
      * @return HasMany<Position, $this>
      */
     public function positions(): HasMany

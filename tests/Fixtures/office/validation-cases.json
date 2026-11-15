@@ -1,0 +1,604 @@
+[
+    {
+        "name": "plan valable",
+        "departments": [
+            {
+                "id": "1",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "2",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "3",
+                "name": "Moyens généraux",
+                "headcount": 0
+            }
+        ],
+        "layout": {
+            "cols": 20,
+            "rows": 10,
+            "rooms": [
+                {
+                    "id": "a",
+                    "type": "open_space",
+                    "department": "1",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 6,
+                    "rows": 2
+                },
+                {
+                    "id": "b",
+                    "type": "private_office",
+                    "department": "2",
+                    "x": 0,
+                    "y": 3,
+                    "cols": 3,
+                    "rows": 4
+                },
+                {
+                    "id": "c",
+                    "type": "micro_kitchen",
+                    "x": 8,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 3
+                }
+            ]
+        },
+        "problems": []
+    },
+    {
+        "name": "chevauchement entre départements",
+        "departments": [
+            {
+                "id": "1",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "2",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "3",
+                "name": "Moyens généraux",
+                "headcount": 0
+            }
+        ],
+        "layout": {
+            "cols": 20,
+            "rows": 10,
+            "rooms": [
+                {
+                    "id": "a",
+                    "type": "open_space",
+                    "department": "1",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 6,
+                    "rows": 2
+                },
+                {
+                    "id": "b",
+                    "type": "private_office",
+                    "department": "2",
+                    "name": "Bureau RH",
+                    "x": 4,
+                    "y": 0,
+                    "cols": 3,
+                    "rows": 4
+                }
+            ]
+        },
+        "problems": [
+            "Open space et Bureau RH se chevauchent : deux départements ne partagent jamais une salle."
+        ]
+    },
+    {
+        "name": "salle hors plan, trop petite, type inconnu, doublon",
+        "departments": [
+            {
+                "id": "1",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "2",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "3",
+                "name": "Moyens généraux",
+                "headcount": 0
+            }
+        ],
+        "layout": {
+            "cols": 10,
+            "rows": 6,
+            "rooms": [
+                {
+                    "id": "a",
+                    "type": "open_space",
+                    "department": "1",
+                    "x": 6,
+                    "y": 0,
+                    "cols": 5,
+                    "rows": 1
+                },
+                {
+                    "id": "a",
+                    "type": "teleporter",
+                    "x": 0,
+                    "y": 3,
+                    "cols": 2,
+                    "rows": 2
+                },
+                {
+                    "id": "c",
+                    "type": "reception",
+                    "x": -1,
+                    "y": 2,
+                    "cols": 5,
+                    "rows": 4
+                }
+            ]
+        },
+        "problems": [
+            "Open space dépasse du plan.",
+            "Open space est trop petite (6 × 2 cases au minimum).",
+            "La salle « a » apparaît deux fois.",
+            "Type de salle inconnu : « teleporter ».",
+            "Hall d'accueil dépasse du plan.",
+            "teleporter et Hall d'accueil se chevauchent : deux départements ne partagent jamais une salle.",
+            "Technique n'a aucun poste de travail.",
+            "Ressources humaines n'a aucun poste de travail."
+        ]
+    },
+    {
+        "name": "propriétaires incorrects",
+        "departments": [
+            {
+                "id": "1",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "2",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "3",
+                "name": "Moyens généraux",
+                "headcount": 0
+            }
+        ],
+        "layout": {
+            "cols": 30,
+            "rows": 10,
+            "rooms": [
+                {
+                    "id": "a",
+                    "type": "micro_kitchen",
+                    "department": "1",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 3
+                },
+                {
+                    "id": "b",
+                    "type": "server_room",
+                    "x": 5,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 3
+                },
+                {
+                    "id": "c",
+                    "type": "archives",
+                    "department": "99",
+                    "x": 10,
+                    "y": 0,
+                    "cols": 3,
+                    "rows": 3
+                }
+            ]
+        },
+        "problems": [
+            "Café est un lieu commun : pas de département.",
+            "Salle des serveurs doit appartenir à un département.",
+            "Salle d'archives : département inconnu « 99 ».",
+            "Technique n'a aucun poste de travail.",
+            "Ressources humaines n'a aucun poste de travail."
+        ]
+    },
+    {
+        "name": "postes insuffisants",
+        "departments": [
+            {
+                "id": "1",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "2",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "3",
+                "name": "Moyens généraux",
+                "headcount": 0
+            }
+        ],
+        "layout": {
+            "cols": 30,
+            "rows": 10,
+            "rooms": [
+                {
+                    "id": "a",
+                    "type": "server_room",
+                    "department": "1",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 3
+                },
+                {
+                    "id": "b",
+                    "type": "private_office",
+                    "department": "2",
+                    "x": 5,
+                    "y": 0,
+                    "cols": 3,
+                    "rows": 3
+                }
+            ]
+        },
+        "problems": [
+            "Technique n'a aucun poste de travail.",
+            "Ressources humaines : 1 postes pour 2 personnes."
+        ]
+    },
+    {
+        "name": "aménageur automatique, modèle studio",
+        "departments": [
+            {
+                "id": "direction",
+                "name": "Direction",
+                "headcount": 2
+            },
+            {
+                "id": "produit",
+                "name": "Produit",
+                "headcount": 2
+            },
+            {
+                "id": "technique",
+                "name": "Technique",
+                "headcount": 4
+            },
+            {
+                "id": "qualite",
+                "name": "Qualité et sécurité",
+                "headcount": 2
+            },
+            {
+                "id": "contenu",
+                "name": "Contenu",
+                "headcount": 2
+            },
+            {
+                "id": "marketing",
+                "name": "Marketing et commercial",
+                "headcount": 2
+            },
+            {
+                "id": "rh",
+                "name": "Ressources humaines",
+                "headcount": 2
+            },
+            {
+                "id": "finances",
+                "name": "Administration et finances",
+                "headcount": 2
+            }
+        ],
+        "layout": {
+            "version": 1,
+            "cols": 31,
+            "rows": 28,
+            "rooms": [
+                {
+                    "id": "commun-reception",
+                    "type": "reception",
+                    "x": 0,
+                    "y": 0,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "commun-micro_kitchen",
+                    "type": "micro_kitchen",
+                    "x": 5,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "commun-meeting_room",
+                    "type": "meeting_room",
+                    "x": 9,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "commun-lounge",
+                    "type": "lounge",
+                    "x": 13,
+                    "y": 0,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "commun-restrooms",
+                    "type": "restrooms",
+                    "x": 17,
+                    "y": 0,
+                    "cols": 3,
+                    "rows": 4
+                },
+                {
+                    "id": "aile0-terrace",
+                    "type": "terrace",
+                    "x": 20,
+                    "y": 0,
+                    "cols": 11,
+                    "rows": 4
+                },
+                {
+                    "id": "direction-executive_office",
+                    "type": "executive_office",
+                    "department": "direction",
+                    "x": 0,
+                    "y": 6,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "direction-control_room",
+                    "type": "control_room",
+                    "department": "direction",
+                    "x": 5,
+                    "y": 6,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "direction-boardroom",
+                    "type": "boardroom",
+                    "department": "direction",
+                    "x": 10,
+                    "y": 6,
+                    "cols": 6,
+                    "rows": 4
+                },
+                {
+                    "id": "produit-open_space",
+                    "type": "open_space",
+                    "department": "produit",
+                    "x": 16,
+                    "y": 6,
+                    "cols": 6,
+                    "rows": 4
+                },
+                {
+                    "id": "produit-brainstorm_room",
+                    "type": "brainstorm_room",
+                    "department": "produit",
+                    "x": 22,
+                    "y": 6,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "produit-creative_studio",
+                    "type": "creative_studio",
+                    "department": "produit",
+                    "x": 26,
+                    "y": 6,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "technique-open_space",
+                    "type": "open_space",
+                    "department": "technique",
+                    "x": 0,
+                    "y": 12,
+                    "cols": 6,
+                    "rows": 3
+                },
+                {
+                    "id": "technique-server_room",
+                    "type": "server_room",
+                    "department": "technique",
+                    "x": 6,
+                    "y": 12,
+                    "cols": 4,
+                    "rows": 3
+                },
+                {
+                    "id": "technique-code_review_room",
+                    "type": "code_review_room",
+                    "department": "technique",
+                    "x": 10,
+                    "y": 12,
+                    "cols": 4,
+                    "rows": 3
+                },
+                {
+                    "id": "qualite-open_space",
+                    "type": "open_space",
+                    "department": "qualite",
+                    "x": 14,
+                    "y": 12,
+                    "cols": 6,
+                    "rows": 4
+                },
+                {
+                    "id": "qualite-war_room",
+                    "type": "war_room",
+                    "department": "qualite",
+                    "x": 20,
+                    "y": 12,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "qualite-qa_lab",
+                    "type": "qa_lab",
+                    "department": "qualite",
+                    "x": 25,
+                    "y": 12,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "contenu-open_space",
+                    "type": "open_space",
+                    "department": "contenu",
+                    "x": 0,
+                    "y": 18,
+                    "cols": 6,
+                    "rows": 4
+                },
+                {
+                    "id": "contenu-media_studio",
+                    "type": "media_studio",
+                    "department": "contenu",
+                    "x": 6,
+                    "y": 18,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "contenu-creative_studio",
+                    "type": "creative_studio",
+                    "department": "contenu",
+                    "x": 10,
+                    "y": 18,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "marketing-open_space",
+                    "type": "open_space",
+                    "department": "marketing",
+                    "x": 15,
+                    "y": 18,
+                    "cols": 6,
+                    "rows": 4
+                },
+                {
+                    "id": "marketing-phone_booth",
+                    "type": "phone_booth",
+                    "department": "marketing",
+                    "x": 21,
+                    "y": 18,
+                    "cols": 2,
+                    "rows": 4
+                },
+                {
+                    "id": "marketing-brainstorm_room",
+                    "type": "brainstorm_room",
+                    "department": "marketing",
+                    "x": 23,
+                    "y": 18,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "aile3-game_room",
+                    "type": "game_room",
+                    "x": 27,
+                    "y": 18,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "rh-private_office",
+                    "type": "private_office",
+                    "department": "rh",
+                    "x": 0,
+                    "y": 24,
+                    "cols": 3,
+                    "rows": 4
+                },
+                {
+                    "id": "rh-training_room",
+                    "type": "training_room",
+                    "department": "rh",
+                    "x": 3,
+                    "y": 24,
+                    "cols": 5,
+                    "rows": 4
+                },
+                {
+                    "id": "rh-hr_office",
+                    "type": "hr_office",
+                    "department": "rh",
+                    "x": 8,
+                    "y": 24,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "finances-private_office",
+                    "type": "private_office",
+                    "department": "finances",
+                    "x": 12,
+                    "y": 24,
+                    "cols": 3,
+                    "rows": 4
+                },
+                {
+                    "id": "finances-archives",
+                    "type": "archives",
+                    "department": "finances",
+                    "x": 15,
+                    "y": 24,
+                    "cols": 3,
+                    "rows": 4
+                },
+                {
+                    "id": "finances-finance_office",
+                    "type": "finance_office",
+                    "department": "finances",
+                    "x": 18,
+                    "y": 24,
+                    "cols": 4,
+                    "rows": 4
+                },
+                {
+                    "id": "aile4-terrace",
+                    "type": "terrace",
+                    "x": 22,
+                    "y": 24,
+                    "cols": 9,
+                    "rows": 4
+                }
+            ]
+        },
+        "problems": []
+    }
+]
