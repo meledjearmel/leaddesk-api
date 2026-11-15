@@ -46,6 +46,12 @@
         },
         {
             "name": "T\u00e2ches"
+        },
+        {
+            "name": "R\u00e8gles"
+        },
+        {
+            "name": "D\u00e9cisions du CEO"
         }
     ],
     "security": [
@@ -4012,6 +4018,792 @@
                 }
             }
         },
+        "/rules": {
+            "get": {
+                "operationId": "v1.rules.index",
+                "description": "Avec `unit_id`, renvoie les r\u00e8gles en vigueur pour cette unit\u00e9 : celles\nde l'entreprise, des unit\u00e9s au-dessus d'elle et les siennes.",
+                "summary": "Lister les r\u00e8gles",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "unit_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RuleResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.rules.store",
+                "description": "R\u00e9serv\u00e9 au CEO. La r\u00e8gle vaut pour les nouvelles activit\u00e9s ; avec\n`extend_to_running`, elle vaut aussi pour les activit\u00e9s en cours (RM-27).",
+                "summary": "Cr\u00e9er une r\u00e8gle",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "extend_to_running": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/rules/{rule}": {
+            "get": {
+                "operationId": "v1.rules.show",
+                "summary": "Lire une r\u00e8gle",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.rules.update",
+                "description": "R\u00e9serv\u00e9 au CEO. Cr\u00e9e une nouvelle version, en vigueur pour les nouvelles\nactivit\u00e9s ; `extend_to_running` l'\u00e9tend aux activit\u00e9s en cours (RM-27).",
+                "summary": "Modifier une r\u00e8gle",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "extend_to_running": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.rules.destroy",
+                "description": "R\u00e9serv\u00e9 au CEO. Refus\u00e9 (409) tant que des r\u00e8gles de niveaux inf\u00e9rieurs\nla pr\u00e9cisent ou la renforcent.",
+                "summary": "Retirer une r\u00e8gle",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/rules/{rule}/extend-to-running": {
+            "post": {
+                "operationId": "v1.rules.extend-to-running",
+                "description": "D\u00e9cision explicite du CEO (RM-27).",
+                "summary": "\u00c9tendre une r\u00e8gle aux activit\u00e9s en cours",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RuleResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/rule-proposals": {
+            "post": {
+                "operationId": "v1.rule-proposals.store",
+                "description": "Ouvert aux agents comme au CEO virtuel : la proposition arrive dans les\nd\u00e9cisions en attente du CEO. La r\u00e8gle existante reste en vigueur tant\nque le CEO n'a pas d\u00e9cid\u00e9 (RM-26).",
+                "summary": "Proposer un changement de r\u00e8gle",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "problem": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    },
+                                    "affected": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    },
+                                    "expected_effects": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    },
+                                    "risks": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    }
+                                },
+                                "required": [
+                                    "problem"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/activities/{activity}/rules": {
+            "get": {
+                "operationId": "v1.activities.rules",
+                "description": "R\u00e8gles en vigueur pour ses \u00e9quipes. Une r\u00e8gle cr\u00e9\u00e9e ou modifi\u00e9e apr\u00e8s\nle d\u00e9but de l'activit\u00e9 ne s'y applique que si le CEO l'a \u00e9tendue aux\nactivit\u00e9s en cours (RM-27).",
+                "summary": "Lire les r\u00e8gles applicables \u00e0 une activit\u00e9",
+                "tags": [
+                    "R\u00e8gles"
+                ],
+                "parameters": [
+                    {
+                        "name": "activity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `RuleResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RuleResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions": {
+            "get": {
+                "operationId": "v1.decisions.index",
+                "description": "Filtrable par \u00e9tat (`pending`, `needs_info`, `approved`, `rejected`) et\npar nature. Les plus r\u00e9centes d'abord.",
+                "summary": "Lister les d\u00e9cisions",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/DecisionStatus"
+                        }
+                    },
+                    {
+                        "name": "kind",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 32
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DecisionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions/{decision}": {
+            "get": {
+                "operationId": "v1.decisions.show",
+                "summary": "Lire une d\u00e9cision",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "decision",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions/{decision}/approve": {
+            "post": {
+                "operationId": "v1.decisions.approve",
+                "description": "R\u00e9serv\u00e9 au CEO. Pour un changement de r\u00e8gle, la r\u00e8gle est alors cr\u00e9\u00e9e,\nmodifi\u00e9e ou retir\u00e9e ; elle vaut pour les nouvelles activit\u00e9s, et pour\nles activit\u00e9s en cours seulement avec `extend_to_running` (RM-27).",
+                "summary": "Approuver",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "decision",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "note": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    },
+                                    "extend_to_running": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions/{decision}/reject": {
+            "post": {
+                "operationId": "v1.decisions.reject",
+                "description": "R\u00e9serv\u00e9 au CEO. Rien ne change : la r\u00e8gle existante reste en vigueur.",
+                "summary": "Refuser",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "decision",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "note": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions/{decision}/request-info": {
+            "post": {
+                "operationId": "v1.decisions.request-info",
+                "description": "R\u00e9serv\u00e9 au CEO. La demande reste ouverte et attend une r\u00e9ponse.",
+                "summary": "Demander des pr\u00e9cisions",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "decision",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "note": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    }
+                                },
+                                "required": [
+                                    "note"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/decisions/{decision}/reply": {
+            "post": {
+                "operationId": "v1.decisions.reply",
+                "description": "La r\u00e9ponse s'ajoute \u00e0 la demande, qui repasse en attente de d\u00e9cision.",
+                "summary": "R\u00e9pondre \u00e0 une demande de pr\u00e9cisions",
+                "tags": [
+                    "D\u00e9cisions du CEO"
+                ],
+                "parameters": [
+                    {
+                        "name": "decision",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    }
+                                },
+                                "required": [
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DecisionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DecisionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -4095,7 +4887,7 @@
                     },
                     "unit_ids": {
                         "type": "array",
-                        "description": "\u00c9quipes mobilis\u00e9es.",
+                        "description": "Identifiants des \u00e9quipes mobilis\u00e9es.",
                         "items": {
                             "type": "integer"
                         }
@@ -4618,6 +5410,102 @@
                 ],
                 "title": "CompanyTemplate"
             },
+            "DecisionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "description": "Nature de la demande, par exemple \u00ab rule_change \u00bb."
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DecisionStatus"
+                    },
+                    "requested_by_agent_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Agent qui a pr\u00e9sent\u00e9 la demande ; vide si elle vient du syst\u00e8me."
+                    },
+                    "requested_by_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "subject_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Ressource concern\u00e9e, quand il y en a une."
+                    },
+                    "payload": {
+                        "type": "string",
+                        "description": "Contenu de la demande, propre \u00e0 sa nature."
+                    },
+                    "decision_note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "R\u00e9ponse du CEO."
+                    },
+                    "decided_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "kind",
+                    "title",
+                    "status",
+                    "requested_by_agent_id",
+                    "requested_by_name",
+                    "subject_id",
+                    "payload",
+                    "decision_note",
+                    "decided_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "DecisionResource"
+            },
+            "DecisionStatus": {
+                "type": "string",
+                "description": "\u00c9tat d'une demande soumise \u00e0 la d\u00e9cision du CEO.\n| |\n|---|\n| `pending` <br/> En attente de la d\u00e9cision du CEO. |\n| `needs_info` <br/> Le CEO a demand\u00e9 des pr\u00e9cisions. |\n| `approved` <br/>  |\n| `rejected` <br/>  |",
+                "enum": [
+                    "pending",
+                    "needs_info",
+                    "approved",
+                    "rejected"
+                ],
+                "title": "DecisionStatus"
+            },
             "LifecycleStatus": {
                 "type": "string",
                 "description": "\u00c9tat d'un poste ou d'un agent : en brouillon ou en service.\n",
@@ -4749,6 +5637,93 @@
                     "updated_at"
                 ],
                 "title": "ProjectResource"
+            },
+            "RuleRelation": {
+                "type": "string",
+                "description": "Ce qu'une r\u00e8gle d'un niveau inf\u00e9rieur fait d'une r\u00e8gle h\u00e9rit\u00e9e (RM-24). Il n'existe volontairement aucune valeur pour l'assouplir ou la supprimer.\n| |\n|---|\n| `precise` <br/> Pr\u00e9ciser la r\u00e8gle h\u00e9rit\u00e9e. |\n| `reinforce` <br/> Renforcer la r\u00e8gle h\u00e9rit\u00e9e. |",
+                "enum": [
+                    "precise",
+                    "reinforce"
+                ],
+                "title": "RuleRelation"
+            },
+            "RuleResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "unit_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Niveau de la r\u00e8gle ; vide pour une r\u00e8gle de toute l'entreprise."
+                    },
+                    "parent_rule_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "R\u00e8gle h\u00e9rit\u00e9e que celle-ci pr\u00e9cise ou renforce."
+                    },
+                    "relation": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/RuleRelation"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "integer"
+                    },
+                    "effective_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "La r\u00e8gle vaut pour les activit\u00e9s cr\u00e9\u00e9es \u00e0 partir de cette date."
+                    },
+                    "extended_to_running": {
+                        "type": "boolean",
+                        "description": "Vrai quand le CEO a \u00e9tendu la r\u00e8gle aux activit\u00e9s d\u00e9j\u00e0 en cours."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "unit_id",
+                    "parent_rule_id",
+                    "relation",
+                    "title",
+                    "body",
+                    "version",
+                    "effective_at",
+                    "extended_to_running",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "RuleResource"
             },
             "StepCategory": {
                 "type": "string",

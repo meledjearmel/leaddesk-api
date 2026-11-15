@@ -121,6 +121,22 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<Rule, $this>
+     */
+    public function rules(): HasMany
+    {
+        return $this->hasMany(Rule::class);
+    }
+
+    /**
+     * @return HasMany<Decision, $this>
+     */
+    public function decisions(): HasMany
+    {
+        return $this->hasMany(Decision::class);
+    }
+
+    /**
      * @return HasMany<AuditEntry, $this>
      */
     public function auditEntries(): HasMany

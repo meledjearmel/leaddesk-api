@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use App\Models\Activity;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,12 +34,8 @@ class ActivityResource extends JsonResource
              * @var array<string, mixed>
              */
             'field_values' => (object) ($this->field_values ?? []),
-            /**
-             * Équipes mobilisées.
-             *
-             * @var list<int>
-             */
-            'unit_ids' => $this->units->pluck('id')->all(),
+            /** Identifiants des équipes mobilisées. */
+            'unit_ids' => $this->units->map(fn (Unit $unit): int => $unit->id)->values()->all(),
             'due_at' => $this->due_at,
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),
             'created_at' => $this->created_at,

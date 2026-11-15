@@ -156,6 +156,28 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : RM-19 est un garde-fou : le CEO ne doit pas pouvoir court-circuiter le responsable par habitude. Le repli vers le CEO évite qu'une tâche reste bloquée dans une entreprise sans responsable (entreprise vierge, postes en brouillon).
 - **Alternatives** : laisser le CEO confirmer dans tous les cas ; bloquer sans repli.
 
+### D-025 · Règles : niveaux, héritage et versions
+
+- **Décision** : une règle est posée au niveau de l'entreprise (`unit_id` vide) ou d'une unité, et vaut pour ce niveau et tous ceux en dessous. Une règle d'un niveau inférieur peut se rattacher à une règle héritée avec la relation `precise` ou `reinforce` ; aucune relation ne permet d'assouplir, et une règle que d'autres précisent ne se retire pas (RM-24). Modifier une règle crée une nouvelle version (compteur ; le détail avant/après est dans le journal).
+- **Limite** : les documents évoquent aussi des règles par projet, poste ou agent. Seuls l'entreprise et les unités sont couverts ici ; les autres niveaux pourront s'ajouter sans changer le principe.
+- **Limite** : le serveur ne juge pas le texte d'une règle. Qu'une règle « renforce » réellement celle qu'elle vise relève de la décision du CEO, seul à pouvoir la créer.
+- **Alternatives** : table de versions dédiée ; niveaux projet, poste et agent dès maintenant.
+
+### D-026 · Seul le CEO change une règle ; les agents proposent (RM-25, RM-26, RM-28)
+
+- **Décision** : créer, modifier, retirer ou étendre une règle est refusé (403) à toute requête faite au nom d'un agent, COO compris. Un agent dépose une proposition (`POST /rule-proposals`) qui décrit le problème, la règle visée, le changement, les personnes touchées, les effets attendus et les risques ; elle devient une décision en attente et ne modifie rien. À l'approbation, la proposition est revérifiée : si la règle visée a changé entre-temps, l'approbation est refusée (409).
+- **Raison** : RM-25 est un interdit absolu ; le garantir sur le serveur le rend indépendant du comportement des agents.
+
+### D-027 · Portée d'une règle dans le temps (RM-27)
+
+- **Décision** : chaque version d'une règle a une date d'entrée en vigueur. Elle s'applique aux activités créées à partir de cette date ; pour les activités déjà en cours, il faut que le CEO l'étende explicitement (`extend_to_running`, à la création, à la modification, à l'approbation, ou par `POST /rules/{id}/extend-to-running`). Une nouvelle version repart sans extension.
+- **Raison** : application directe de RM-27, et de l'écart voulu avec RM-21.
+
+### D-028 · File unique des décisions du CEO
+
+- **Décision** : table `decisions` avec une nature (`kind`), un contenu libre (`payload`), un auteur et quatre états (`pending`, `needs_info`, `approved`, `rejected`). Seul le CEO approuve, refuse ou demande des précisions ; l'auteur répond aux précisions. Première nature : `rule_change`. Les limites de coût, accès, Skills et embauches s'y ajouteront comme de nouvelles natures.
+- **Raison** : le plan demande « un seul mécanisme réutilisé partout ».
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

@@ -28,11 +28,7 @@ class TaskResource extends JsonResource
             'workflow_step_id' => $this->workflow_step_id,
             /** Catégorie de l'étape en cours ; vide si le type n'a pas de workflow de tâche. */
             'step_category' => $this->step?->category,
-            /**
-             * Agents affectés, l'agent principal d'abord.
-             *
-             * @var list<array{agent_id: int, name: string, is_lead: bool}>
-             */
+            /** Agents affectés, l'agent principal d'abord. */
             'agents' => $this->agents->map(fn (Agent $agent): array => [
                 'agent_id' => $agent->id,
                 'name' => $agent->name,

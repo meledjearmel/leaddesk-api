@@ -7,8 +7,10 @@ use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuditEntryController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\DecisionController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\RuleController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\UnitController;
 use App\Http\Controllers\Api\V1\WorkflowController;
@@ -89,6 +91,20 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::put('/agents', 'syncAgents')->name('agents');
             Route::post('/step', 'move')->name('step');
             Route::post('/confirm-completion', 'confirmCompletion')->name('confirm-completion');
+        });
+
+        Route::apiResource('rules', RuleController::class)->whereNumber('rule');
+        Route::post('/rules/{rule}/extend-to-running', [RuleController::class, 'extendToRunning'])->whereNumber('rule')->name('rules.extend-to-running');
+        Route::post('/rule-proposals', [RuleController::class, 'propose'])->name('rule-proposals.store');
+        Route::get('/activities/{activity}/rules', [RuleController::class, 'forActivity'])->whereNumber('activity')->name('activities.rules');
+
+        Route::get('/decisions', [DecisionController::class, 'index'])->name('decisions.index');
+        Route::controller(DecisionController::class)->prefix('decisions/{decision}')->whereNumber('decision')->name('decisions.')->group(function (): void {
+            Route::get('/', 'show')->name('show');
+            Route::post('/approve', 'approve')->name('approve');
+            Route::post('/reject', 'reject')->name('reject');
+            Route::post('/request-info', 'requestInfo')->name('request-info');
+            Route::post('/reply', 'reply')->name('reply');
         });
     });
 });
