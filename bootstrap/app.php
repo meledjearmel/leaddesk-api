@@ -15,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
+        then: function (): void {
+            // Prototypes de la phase 0 : jamais chargés en production.
+            if (config('app.prototypes') === true) {
+                require base_path('prototypes/realtime/routes.php');
+            }
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
