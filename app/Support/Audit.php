@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\ActorType;
 use App\Enums\AuditKind;
+use App\Events\CompanyChanged;
 use App\Models\AuditEntry;
 use App\Models\Company;
 use App\Models\User;
@@ -54,7 +55,7 @@ class Audit
     ): AuditEntry {
         [$actorType, $actorId] = $this->currentActor();
 
-        return AuditEntry::query()->create([
+        $entry = AuditEntry::query()->create([
             'company_id' => $company instanceof Company ? $company->id : $company,
             'actor_type' => $actorType,
             'actor_id' => $actorId,
@@ -64,6 +65,11 @@ class Audit
             'subject_id' => $subject?->getKey(),
             'properties' => $properties === [] ? null : $properties,
         ]);
+
+        // Chaque entrée du journal prévient en temps réel les ordinateurs du CEO.
+        CompanyChanged::dispatch($entry);
+
+        return $entry;
     }
 
     /**

@@ -2300,6 +2300,30 @@
                     }
                 }
             }
+        },
+        "/broadcasting/auth": {
+            "get": {
+                "operationId": "broadcast.authenticate",
+                "summary": "Authenticate the request for channel access",
+                "tags": [
+                    "Broadcast"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {

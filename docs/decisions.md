@@ -109,6 +109,14 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : `CONCEPTION_LEADDESK.md` réserve « CEO » à l'utilisateur humain et nomme « COO » le rôle de coordination ; la synthèse parle d'un « CEO virtuel » sans le définir comme un poste distinct. Créer deux postes aurait inventé une exigence.
 - **À confirmer par Armel** : le « CEO virtuel » est-il bien le COO, ou un agent distinct placé au-dessus de lui ? Le changement se limite au fichier du modèle.
 
+## Phase 2 — Socle application (partie serveur)
+
+### D-018 · Un seul événement temps réel, issu du journal
+
+- **Décision** : chaque entrée du journal de traçabilité émet `company.changed` sur le canal privé `company.{id}`. L'événement ne contient que l'événement, la ressource et son identifiant ; l'application recharge ensuite par l'API. Abonnement autorisé par jeton sur `POST /api/v1/broadcasting/auth`.
+- **Raison** : un seul mécanisme couvre toutes les ressources présentes et futures ; aucune donnée métier ne transite par le canal ; le temps réel ne peut pas diverger de l'API.
+- **Alternatives** : un événement par ressource avec sa charge utile complète (moins d'appels, mais deux formats à tenir à jour).
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).
