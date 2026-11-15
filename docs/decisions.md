@@ -244,6 +244,14 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Décision** : une unité porte des étiquettes d'activité (`units.activity_tags`), choisies parmi `resources/office/activity-tags.json` (exporté de `ActivityTag.all` de l'application, servi par `GET /office/activity-tags`). L'aménagement en déduit les salles spécialisées dont l'unité a besoin. `GET /office/departments` renvoie aussi la couleur et les étiquettes. Le modèle studio reprend les activités du modèle de l'application ; les unités système reçoivent des activités par défaut (RH : recrutement, formation, calme ; Moyens généraux : documents).
 - **Raison** : l'aménageur de l'application choisit les salles selon les activités ; sans elles, les départements venus du serveur n'auraient que des salles de travail. Les étiquettes restent modifiables par le CEO (RM-03).
 - **Alternatives** : déduire les activités des types d'activité rattachés à l'unité (trop pauvres aujourd'hui pour choisir une salle).
+### D-038 · MCP interne et outils d'aménagement
+
+- **Décision** : premier serveur du MCP interne, `/mcp/leaddesk` (`laravel/mcp`), protégé comme l'API : jeton Sanctum du CEO et agent dans `X-LeadDesk-Agent` (`ResolveActingAgent`). Deux outils :
+  - `office.context` : départements, activités, catalogue, plan en vigueur, règles et format du plan ;
+  - `office.propose_plan` : valide le plan avec `OfficePlanValidator`. Un plan invalide est refusé avec ses problèmes, sans rien enregistrer. Un plan valable devient une proposition et une décision `office_plan` en attente.
+- **Qui propose** (D-012 de `leaddesk-app`) : la permission d'outil `office.propose_plan` du catalogue des outils, refusée par défaut grâce au nouveau réglage `leaddesk.tool_defaults`. Le responsable des Moyens généraux la reçoit : celui créé d'office et celui du modèle studio. Le CEO peut la donner à un autre poste (RM-03). Le CEO lui-même ne propose pas par le MCP : il dessine le plan directement.
+- **Décisions synchronisées** : accepter ou refuser par les routes du plan ou par celles des décisions donne le même résultat. Une proposition périmée ferme sa décision avec une note.
+- **Alternatives** : un serveur MCP par domaine (prématuré) ; une IA d'aménagement hors organigramme (écartée par D-012).
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

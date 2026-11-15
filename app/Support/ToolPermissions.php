@@ -49,6 +49,19 @@ class ToolPermissions
         return $resolved;
     }
 
+    /**
+     * Mode d'un outil que le poste ne règle pas : le sien s'il en a un
+     * (leaddesk.tool_defaults), sinon le mode par défaut.
+     */
+    public function defaultModeFor(string $tool): ToolMode
+    {
+        /** @var array<string, string> $defaults */
+        $defaults = config('leaddesk.tool_defaults', []);
+        $mode = $defaults[$tool] ?? null;
+
+        return $mode === null ? $this->defaultMode() : (ToolMode::tryFrom($mode) ?? ToolMode::Deny);
+    }
+
     public function modeFor(?Position $position, string $tool): ToolMode
     {
         if ($position === null || ! array_key_exists($tool, $this->catalog())) {
@@ -58,7 +71,7 @@ class ToolPermissions
         $configured = $position->tool_permissions[$tool] ?? null;
 
         return $configured === null
-            ? $this->defaultMode()
+            ? $this->defaultModeFor($tool)
             : (ToolMode::tryFrom($configured) ?? ToolMode::Deny);
     }
 }

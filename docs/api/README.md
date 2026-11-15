@@ -65,3 +65,14 @@ Réservé au CEO de l'entreprise `{id}`.
 - `subject_id` : identifiant de la ressource concernée.
 
 L'événement passe par la file d'attente et n'est émis qu'une fois la transaction validée : un worker (`php artisan queue:work`) doit tourner à côté de Reverb.
+
+## MCP interne — `/mcp/leaddesk`
+
+Serveur MCP (protocole HTTP « streamable ») utilisé par les agents depuis l'application de bureau (D-038). Authentification : jeton Sanctum du CEO (`Authorization: Bearer …`) et agent dans l'en-tête `X-LeadDesk-Agent`, comme pour l'API. Tout est journalisé au nom de l'agent (RM-34).
+
+| Outil | Rôle |
+| --- | --- |
+| `office.context` | Lecture seule : départements (effectif, couleur, activités), étiquettes d'activité, catalogue des salles, plan en vigueur, nombre de propositions en attente, règles et format du plan. |
+| `office.propose_plan` | Propose un plan (`layout`, `reason`). Il est validé avec les mêmes règles que l'application ; invalide, il est refusé avec la liste des problèmes. Valable, il devient une proposition et une décision `office_plan` en attente du CEO. Réservé aux postes dont la permission `office.propose_plan` n'est pas `deny` (refusé par défaut). |
+
+Accepter ou refuser se fait au choix par `/office/plans/{id}/accept|reject` ou par `/decisions/{id}/approve|reject` : les deux restent synchronisés. Une proposition périmée ferme sa décision (refusée, avec une note).

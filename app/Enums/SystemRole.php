@@ -42,6 +42,20 @@ enum SystemRole: string
         };
     }
 
+    /**
+     * Permissions d'outils du poste de responsable créé d'office (D-038) :
+     * les Moyens généraux proposent l'aménagement.
+     *
+     * @return array<string, string>|null
+     */
+    public function headToolPermissions(): ?array
+    {
+        return match ($this) {
+            self::Hr => null,
+            self::Facilities => ['office.propose_plan' => 'allow'],
+        };
+    }
+
     public function headTitle(): string
     {
         return match ($this) {

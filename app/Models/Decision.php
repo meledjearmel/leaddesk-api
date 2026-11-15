@@ -37,6 +37,9 @@ class Decision extends Model
 
     public const string KIND_TOOL_APPROVAL = 'tool_approval';
 
+    /** Réaménagement du bureau proposé par un poste (D-038). */
+    public const string KIND_OFFICE_PLAN = 'office_plan';
+
     /**
      * @return BelongsTo<Company, $this>
      */

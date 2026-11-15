@@ -50,9 +50,19 @@ return [
         'delete_file' => 'Supprimer un fichier (vers la corbeille)',
         'run_command' => 'Lancer une commande',
         'web_fetch' => 'Consulter une page web',
+        // Outil du MCP interne (D-038) : réservé aux postes qui le reçoivent.
+        'office.propose_plan' => 'Proposer un aménagement du bureau',
     ],
 
     'default_tool_mode' => env('LEADDESK_DEFAULT_TOOL_MODE', 'ask'),
+
+    /*
+    | Mode par défaut propre à un outil, quand le poste ne le règle pas. Les
+    | outils du MCP interne sont refusés tant qu'un poste ne les reçoit pas.
+    */
+    'tool_defaults' => [
+        'office.propose_plan' => 'deny',
+    ],
 
     /*
     |--------------------------------------------------------------------------

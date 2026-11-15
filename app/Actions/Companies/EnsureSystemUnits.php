@@ -35,6 +35,7 @@ class EnsureSystemUnits
                 'mission' => $role->headMission(),
                 'responsibilities' => [],
                 'is_head' => true,
+                'tool_permissions' => $role->headToolPermissions(),
                 'status' => LifecycleStatus::Draft,
                 'sort_order' => 0,
             ]);

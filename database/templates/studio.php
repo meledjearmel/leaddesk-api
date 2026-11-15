@@ -273,10 +273,10 @@ return [
                     'system_role' => 'facilities',
                     'color' => '#8C9A5B',
                     'positions' => [
-                        $head('facilities-head', 'Responsable Moyens généraux', 'Aménager le bureau et proposer au CEO les réaménagements nécessaires.', [
+                        [...$head('facilities-head', 'Responsable Moyens généraux', 'Aménager le bureau et proposer au CEO les réaménagements nécessaires.', [
                             'Proposer un aménagement quand l\'organisation ou l\'effectif change',
                             'Veiller à ce que chaque département ait ses salles',
-                        ], 'finance-head', 'Lisandre', 'Pratique, il pense à la place de chacun avant que la question se pose.'),
+                        ], 'finance-head', 'Lisandre', 'Pratique, il pense à la place de chacun avant que la question se pose.'), 'tool_permissions' => ['office.propose_plan' => 'allow']],
                     ],
                     'children' => [],
                 ],

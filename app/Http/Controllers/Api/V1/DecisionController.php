@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Actions\Costs\ResolveCostLimitDecision;
+use App\Actions\Office\ManageOfficePlans;
 use App\Actions\Rules\RuleChange;
 use App\Enums\DecisionStatus;
 use App\Http\Resources\V1\DecisionResource;
@@ -28,6 +29,7 @@ class DecisionController extends ApiController
         private readonly ActingAgent $actingAgent,
         private readonly RuleChange $ruleChange,
         private readonly ResolveCostLimitDecision $costLimit,
+        private readonly ManageOfficePlans $officePlans,
     ) {}
 
     /**
@@ -98,6 +100,11 @@ class DecisionController extends ApiController
                 $this->ruleChange->apply($company, $change, $request->boolean('extend_to_running'));
             }
 
+            if ($model->kind === Decision::KIND_OFFICE_PLAN) {
+                // D-038 : le plan proposé entre en vigueur (revalidé, 422 sinon).
+                $this->officePlans->accept($this->company($request), $this->officePlans->planOf($model), $data['note'] ?? null);
+            }
+
             if ($model->kind === Decision::KIND_COST_LIMIT) {
                 // RM-36 : le CEO relève la limite, l'exécution reprend.
                 $this->costLimit->approve($model, $data['new_limit_micros'] ?? null);
@@ -122,6 +129,10 @@ class DecisionController extends ApiController
     {
         $model = $this->openDecision($request, $decision);
         $data = $request->validate(['note' => ['sometimes', 'nullable', 'string', 'max:5000']]);
+
+        if ($model->kind === Decision::KIND_OFFICE_PLAN) {
+            $this->officePlans->reject($this->officePlans->planOf($model), $data['note'] ?? null);
+        }
 
         if ($model->kind === Decision::KIND_COST_LIMIT) {
             // RM-36 : le CEO refuse de dépenser plus, l'exécution s'arrête.

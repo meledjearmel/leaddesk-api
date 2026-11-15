@@ -18,7 +18,7 @@ use RuntimeException;
  * appartient à l'entreprise et s'adapte librement. Postes et agents sont créés
  * en brouillon, sans modèle IA ni accès.
  *
- * @phpstan-type PositionDefinition array{key: string, title: string, mission: string, responsibilities: list<string>, is_head: bool, reports_to: string|null, agent: array{name: string, bio: string}}
+ * @phpstan-type PositionDefinition array{key: string, title: string, mission: string, responsibilities: list<string>, is_head: bool, reports_to: string|null, agent: array{name: string, bio: string}, tool_permissions?: array<string, string>}
  * @phpstan-type UnitDefinition array{name: string, kind: string, system_role?: string, activity_tags?: list<string>, color: string, positions: list<PositionDefinition>, children: list<array<string, mixed>>}
  */
 class ApplyCompanyTemplate
@@ -83,6 +83,7 @@ class ApplyCompanyTemplate
                 'mission' => $positionDefinition['mission'],
                 'responsibilities' => $positionDefinition['responsibilities'],
                 'is_head' => $positionDefinition['is_head'],
+                'tool_permissions' => $positionDefinition['tool_permissions'] ?? null,
                 'status' => LifecycleStatus::Draft,
                 'sort_order' => $index,
             ]);

@@ -2,9 +2,11 @@
 
 namespace App\Actions\Office;
 
+use App\Enums\DecisionStatus;
 use App\Enums\OfficePlanStatus;
 use App\Models\Agent;
 use App\Models\Company;
+use App\Models\Decision;
 use App\Models\OfficePlan;
 use App\Office\CompanyOfficeDepartments;
 use App\Office\OfficePlanValidator;
@@ -56,15 +58,30 @@ class ManageOfficePlans
     {
         $this->assertValid($company, $layout);
 
-        return DB::transaction(fn (): OfficePlan => $company->officePlans()->create([
-            'version' => $this->nextVersion($company),
-            'status' => OfficePlanStatus::Proposed,
-            'layout' => $layout,
-            'proposed_by_agent_id' => $agent->id,
-            'proposed_by_position_id' => $agent->position_id,
-            'based_on_id' => $this->current($company)?->id,
-            'reason' => $reason,
-        ]));
+        return DB::transaction(function () use ($company, $agent, $layout, $reason): OfficePlan {
+            $plan = $company->officePlans()->create([
+                'version' => $this->nextVersion($company),
+                'status' => OfficePlanStatus::Proposed,
+                'layout' => $layout,
+                'proposed_by_agent_id' => $agent->id,
+                'proposed_by_position_id' => $agent->position_id,
+                'based_on_id' => $this->current($company)?->id,
+                'reason' => $reason,
+            ]);
+
+            // D-012 : la proposition attend le CEO, avec ses autres décisions.
+            $company->decisions()->create([
+                'kind' => Decision::KIND_OFFICE_PLAN,
+                'title' => "Réaménagement du bureau (version {$plan->version})",
+                'status' => DecisionStatus::Pending,
+                'requested_by_agent_id' => $agent->id,
+                'subject_type' => $plan->getMorphClass(),
+                'subject_id' => $plan->id,
+                'payload' => ['office_plan_id' => $plan->id, 'reason' => $reason],
+            ]);
+
+            return $plan;
+        });
     }
 
     /**
@@ -104,6 +121,7 @@ class ManageOfficePlans
                 'decision_comment' => $comment,
                 'decided_at' => now(),
             ]);
+            $this->closeDecision($plan, DecisionStatus::Approved, $comment);
 
             return $plan;
         });
@@ -113,11 +131,14 @@ class ManageOfficePlans
     {
         $this->assertProposed($plan);
 
-        $plan->update([
-            'status' => OfficePlanStatus::Rejected,
-            'decision_comment' => $comment,
-            'decided_at' => now(),
-        ]);
+        DB::transaction(function () use ($plan, $comment): void {
+            $plan->update([
+                'status' => OfficePlanStatus::Rejected,
+                'decision_comment' => $comment,
+                'decided_at' => now(),
+            ]);
+            $this->closeDecision($plan, DecisionStatus::Rejected, $comment);
+        });
 
         return $plan;
     }
@@ -133,7 +154,40 @@ class ManageOfficePlans
             ->where('status', OfficePlanStatus::Proposed)
             ->when($except !== null, fn ($query) => $query->whereKeyNot($except?->id))
             ->get()
-            ->each(fn (OfficePlan $proposal) => $proposal->update(['status' => OfficePlanStatus::Stale]));
+            ->each(function (OfficePlan $proposal): void {
+                $proposal->update(['status' => OfficePlanStatus::Stale]);
+                $this->closeDecision($proposal, DecisionStatus::Rejected, 'Périmée : le plan du bureau a changé entre-temps.');
+            });
+    }
+
+    /**
+     * Ferme la décision ouverte liée à une proposition, s'il y en a une.
+     */
+    private function closeDecision(OfficePlan $plan, DecisionStatus $status, ?string $note): void
+    {
+        Decision::query()
+            ->where('company_id', $plan->company_id)
+            ->where('kind', Decision::KIND_OFFICE_PLAN)
+            ->where('subject_type', $plan->getMorphClass())
+            ->where('subject_id', $plan->id)
+            ->whereIn('status', [DecisionStatus::Pending, DecisionStatus::NeedsInfo])
+            ->get()
+            ->each(fn (Decision $decision) => $decision->update([
+                'status' => $status,
+                'decision_note' => $note,
+                'decided_at' => now(),
+            ]));
+    }
+
+    /**
+     * Proposition liée à une décision du CEO.
+     */
+    public function planOf(Decision $decision): OfficePlan
+    {
+        /** @var int|null $id */
+        $id = $decision->payload['office_plan_id'] ?? $decision->subject_id;
+
+        return OfficePlan::query()->where('company_id', $decision->company_id)->findOrFail($id);
     }
 
     private function assertProposed(OfficePlan $plan): void
