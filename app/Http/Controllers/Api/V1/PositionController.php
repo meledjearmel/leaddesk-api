@@ -106,6 +106,10 @@ class PositionController extends ApiController
             throw new ConflictHttpException("D'autres postes rendent compte à ce poste.");
         }
 
+        if ($model->agents()->exists()) {
+            throw new ConflictHttpException('Un agent occupe ce poste : changez-le de poste avant.');
+        }
+
         $model->delete();
 
         return response()->noContent();

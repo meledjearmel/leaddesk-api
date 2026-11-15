@@ -76,6 +76,16 @@ class Position extends Model
     }
 
     /**
+     * Agents qui occupent ce poste.
+     *
+     * @return HasMany<Agent, $this>
+     */
+    public function agents(): HasMany
+    {
+        return $this->hasMany(Agent::class);
+    }
+
+    /**
      * Vrai si ce poste est $other ou lui rend compte, directement ou non.
      */
     public function isSelfOrReportsTo(Position $other): bool

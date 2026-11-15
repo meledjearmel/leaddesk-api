@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AgentController;
+use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\PositionController;
@@ -35,5 +37,26 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
 
         Route::apiResource('positions', PositionController::class)->whereNumber('position');
         Route::post('/positions/{position}/restore', [PositionController::class, 'restore'])->whereNumber('position')->name('positions.restore');
+
+        Route::apiResource('agents', AgentController::class)->whereNumber('agent');
+        Route::controller(AgentController::class)->prefix('agents/{agent}')->whereNumber('agent')->name('agents.')->group(function (): void {
+            Route::post('/restore', 'restore')->name('restore');
+            Route::post('/position', 'changePosition')->name('position');
+            Route::get('/assignments', 'assignments')->name('assignments');
+            Route::put('/ai-models', 'syncAiModels')->name('ai-models');
+            Route::post('/activate', 'activate')->name('activate');
+            Route::post('/deactivate', 'deactivate')->name('deactivate');
+        });
+
+        Route::get('/ai-providers/catalog', [AiProviderController::class, 'catalog'])->name('ai-providers.catalog');
+        Route::apiResource('ai-providers', AiProviderController::class)
+            ->parameters(['ai-providers' => 'aiProvider'])
+            ->whereNumber('aiProvider');
+        Route::post('/ai-providers/{aiProvider}/models', [AiProviderController::class, 'storeModel'])
+            ->whereNumber('aiProvider')->name('ai-providers.models.store');
+        Route::patch('/ai-models/{aiModel}', [AiProviderController::class, 'updateModel'])
+            ->whereNumber('aiModel')->name('ai-models.update');
+        Route::delete('/ai-models/{aiModel}', [AiProviderController::class, 'destroyModel'])
+            ->whereNumber('aiModel')->name('ai-models.destroy');
     });
 });

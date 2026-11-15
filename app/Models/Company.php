@@ -65,6 +65,22 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<Agent, $this>
+     */
+    public function agents(): HasMany
+    {
+        return $this->hasMany(Agent::class);
+    }
+
+    /**
+     * @return HasMany<AiProvider, $this>
+     */
+    public function aiProviders(): HasMany
+    {
+        return $this->hasMany(AiProvider::class);
+    }
+
+    /**
      * @return HasMany<AuditEntry, $this>
      */
     public function auditEntries(): HasMany

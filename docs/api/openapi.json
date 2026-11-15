@@ -22,6 +22,12 @@
         },
         {
             "name": "Postes"
+        },
+        {
+            "name": "Agents"
+        },
+        {
+            "name": "Mod\u00e8les IA"
         }
     ],
     "security": [
@@ -935,6 +941,1200 @@
                     }
                 }
             }
+        },
+        "/agents": {
+            "get": {
+                "operationId": "v1.agents.index",
+                "description": "Filtrable par poste et par \u00e9tat. Avec `trashed=1`, renvoie la corbeille \u00e0 la place.",
+                "summary": "Lister les agents",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "position_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "$ref": "#/components/schemas/LifecycleStatus"
+                        }
+                    },
+                    {
+                        "name": "trashed",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/AgentResource"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "ai_models"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.agents.store",
+                "description": "L'agent est cr\u00e9\u00e9 en brouillon. S'il re\u00e7oit un poste, son parcours commence.",
+                "summary": "Cr\u00e9er un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    },
+                                    "bio": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    },
+                                    "position_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Poste de l'agent, de la m\u00eame entreprise."
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}": {
+            "get": {
+                "operationId": "v1.agents.show",
+                "summary": "Lire un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.agents.update",
+                "description": "Le poste se change par la route d\u00e9di\u00e9e, l'\u00e9tat par la mise en service.",
+                "summary": "Modifier l'identit\u00e9 d'un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 120
+                                    },
+                                    "bio": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 5000
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.agents.destroy",
+                "description": "Son identit\u00e9 et son parcours sont conserv\u00e9s.",
+                "summary": "Mettre un agent \u00e0 la corbeille",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/restore": {
+            "post": {
+                "operationId": "v1.agents.restore",
+                "description": "Refus\u00e9 (409) si son poste est \u00e0 la corbeille.",
+                "summary": "Restaurer un agent depuis la corbeille",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AgentResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/position": {
+            "post": {
+                "operationId": "v1.agents.position",
+                "description": "L'agent garde son identit\u00e9 et son historique (RM-05) : l'affectation en\ncours est close et une nouvelle commence. `position_id` vide retire\nl'agent de tout poste.",
+                "summary": "Changer le poste d'un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "position_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "position_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/assignments": {
+            "get": {
+                "operationId": "v1.agents.assignments",
+                "description": "Toutes ses affectations, de la plus r\u00e9cente \u00e0 la plus ancienne.",
+                "summary": "Lire le parcours d'un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `AssignmentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AssignmentResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/ai-models": {
+            "put": {
+                "operationId": "v1.agents.ai-models",
+                "description": "Remplace la liste des mod\u00e8les de l'agent (RM-10). Un agent en service\ndoit garder au moins un mod\u00e8le (RM-06).",
+                "summary": "Affecter des mod\u00e8les IA \u00e0 un agent",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "models": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "ai_model_id": {
+                                                    "type": "integer"
+                                                },
+                                                "purpose": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Usage pr\u00e9vu de ce mod\u00e8le pour cet agent.",
+                                                    "maxLength": 160
+                                                },
+                                                "is_default": {
+                                                    "type": "boolean",
+                                                    "description": "Un seul mod\u00e8le par d\u00e9faut."
+                                                }
+                                            },
+                                            "required": [
+                                                "ai_model_id"
+                                            ]
+                                        },
+                                        "maxItems": 20,
+                                        "uniqueItems": true
+                                    }
+                                },
+                                "required": [
+                                    "models"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/activate": {
+            "post": {
+                "operationId": "v1.agents.activate",
+                "description": "Possible d\u00e8s qu'un mod\u00e8le IA lui est configur\u00e9 ; aucun acc\u00e8s MCP n'est\nexig\u00e9 (RM-06). Refus\u00e9 (409) sans mod\u00e8le utilisable.",
+                "summary": "Mettre un agent en service",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/deactivate": {
+            "post": {
+                "operationId": "v1.agents.deactivate",
+                "summary": "Repasser un agent en brouillon",
+                "tags": [
+                    "Agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AgentResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AgentResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "ai_models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ai-providers/catalog": {
+            "get": {
+                "operationId": "v1.ai-providers.catalog",
+                "description": "Aide \u00e0 la saisie : un type absent du catalogue reste accept\u00e9.",
+                "summary": "Lire le catalogue des types de fournisseurs",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "driver": {
+                                                        "type": "string"
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "driver",
+                                                    "label"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ai-providers": {
+            "get": {
+                "operationId": "v1.ai-providers.index",
+                "summary": "Lister les fournisseurs et leurs mod\u00e8les",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `AiProviderResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/AiProviderResource"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "models"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.ai-providers.store",
+                "summary": "Connecter un fournisseur",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "`AiProviderResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AiProviderResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ai-providers/{aiProvider}": {
+            "get": {
+                "operationId": "v1.ai-providers.show",
+                "summary": "Lire un fournisseur",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiProvider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AiProviderResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AiProviderResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.ai-providers.update",
+                "summary": "Modifier un fournisseur",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiProvider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AiProviderResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AiProviderResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "models"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.ai-providers.destroy",
+                "description": "Refus\u00e9 (409) si un agent en service n'a que ses mod\u00e8les pour travailler.",
+                "summary": "Retirer un fournisseur",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiProvider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ai-providers/{aiProvider}/models": {
+            "post": {
+                "operationId": "v1.ai-providers.models.store",
+                "summary": "Ajouter un mod\u00e8le \u00e0 un fournisseur",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiProvider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "identifier": {
+                                        "type": "string",
+                                        "description": "Identifiant du mod\u00e8le chez le fournisseur, unique pour ce fournisseur.",
+                                        "maxLength": 120
+                                    },
+                                    "label": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 120
+                                    }
+                                },
+                                "required": [
+                                    "identifier"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`AiModelResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AiModelResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ai-models/{aiModel}": {
+            "patch": {
+                "operationId": "v1.ai-models.update",
+                "summary": "Renommer un mod\u00e8le",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiModel",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "label": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 120
+                                    }
+                                },
+                                "required": [
+                                    "label"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AiModelResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AiModelResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.ai-models.destroy",
+                "description": "Refus\u00e9 (409) si un agent en service n'a que ce mod\u00e8le pour travailler.",
+                "summary": "Retirer un mod\u00e8le",
+                "tags": [
+                    "Mod\u00e8les IA"
+                ],
+                "parameters": [
+                    {
+                        "name": "aiModel",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -945,6 +2145,240 @@
             }
         },
         "schemas": {
+            "AgentAiModelResource": {
+                "type": "object",
+                "properties": {
+                    "ai_model_id": {
+                        "type": "integer"
+                    },
+                    "ai_provider_id": {
+                        "type": "integer"
+                    },
+                    "identifier": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "purpose": {
+                        "type": "string",
+                        "description": "Usage pr\u00e9vu de ce mod\u00e8le pour cet agent."
+                    },
+                    "is_default": {
+                        "type": "boolean",
+                        "description": "Vrai pour le mod\u00e8le utilis\u00e9 quand aucun usage ne correspond."
+                    }
+                },
+                "required": [
+                    "ai_model_id",
+                    "ai_provider_id",
+                    "identifier",
+                    "label",
+                    "purpose",
+                    "is_default"
+                ],
+                "title": "AgentAiModelResource"
+            },
+            "AgentResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "position_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Poste actuel ; vide si l'agent n'est affect\u00e9 \u00e0 aucun poste."
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/LifecycleStatus"
+                    },
+                    "ai_models": {
+                        "type": "array",
+                        "description": "Mod\u00e8les IA affect\u00e9s \u00e0 l'agent.",
+                        "items": {
+                            "$ref": "#/components/schemas/AgentAiModelResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Renseign\u00e9 quand l'agent est \u00e0 la corbeille."
+                    }
+                },
+                "required": [
+                    "id",
+                    "position_id",
+                    "name",
+                    "bio",
+                    "status",
+                    "created_at",
+                    "updated_at",
+                    "deleted_at"
+                ],
+                "title": "AgentResource"
+            },
+            "AiModelResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "ai_provider_id": {
+                        "type": "integer"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "description": "Identifiant du mod\u00e8le chez le fournisseur."
+                    },
+                    "label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "ai_provider_id",
+                    "identifier",
+                    "label",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "AiModelResource"
+            },
+            "AiProviderResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "driver": {
+                        "type": "string",
+                        "description": "Type de source, par exemple \u00ab anthropic \u00bb ou \u00ab openrouter \u00bb."
+                    },
+                    "base_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Adresse de l'API si elle diff\u00e8re de celle par d\u00e9faut du type."
+                    },
+                    "models": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AiModelResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "driver",
+                    "base_url",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "AiProviderResource"
+            },
+            "AssignmentResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "position_id": {
+                        "type": "integer"
+                    },
+                    "position_title": {
+                        "type": "string",
+                        "description": "Intitul\u00e9 du poste, lisible m\u00eame si le poste est \u00e0 la corbeille."
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ended_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Vide pour l'affectation en cours."
+                    }
+                },
+                "required": [
+                    "id",
+                    "position_id",
+                    "position_title",
+                    "started_at",
+                    "ended_at"
+                ],
+                "title": "AssignmentResource"
+            },
             "CompanyResource": {
                 "type": "object",
                 "properties": {

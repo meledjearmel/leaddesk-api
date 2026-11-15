@@ -72,6 +72,31 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : RM-34 doit être couvert dès le départ, sans dépendre de la discipline de chaque contrôleur.
 - **Alternatives** : journalisation explicite dans chaque action (plus fine, mais facile à oublier) ; les événements métier qui ne sont pas des modifications de modèle l'utiliseront en complément.
 
+### D-012 · Changement de poste : les accès découlent du seul poste actuel (RM-09)
+
+- **Décision** : quand un agent change de poste, rien n'est cumulé : ses accès sont ceux de son nouveau poste. L'affectation précédente est close et gardée dans son parcours (`agent_position_assignments`) ; un index empêche deux affectations ouvertes.
+- **Raison** : RM-09 est ouverte, mais `CONCEPTION_MODULES_LEADDESK.md` (10.1) dit déjà que « ses accès résultent du nouveau poste ». C'est aussi l'option la plus simple et la plus sûre.
+- **Alternatives** : cumul temporaire des accès de l'ancien poste pendant une passation.
+
+### D-013 · Aucune clé d'API sur le serveur
+
+- **Décision** : un fournisseur IA est décrit par son nom, son type et son adresse éventuelle ; le serveur ne reçoit et ne stocke aucune clé. Les clés restent dans le stockage sécurisé de Windows, sur chaque ordinateur.
+- **Raison** : les modèles sont appelés depuis l'application de bureau ; le serveur n'en a jamais besoin. Les documents demandent un « espace sécurisé » hors des dossiers de projet.
+- **Conséquence** : sur un second ordinateur, le CEO ressaisit ses clés.
+- **Alternatives** : clés chiffrées côté poste puis synchronisées par le serveur (comme la sauvegarde de clé de signature de Folio), si la ressaisie gêne en phase 7.
+
+### D-014 · Catalogue de fournisseurs ouvert
+
+- **Décision** : `config/leaddesk.php` liste les types de fournisseurs connus ; un type absent du catalogue est accepté.
+- **Raison** : les documents demandent un catalogue qui évolue, pas une liste fermée.
+- **Alternatives** : liste fermée validée par le serveur.
+
+### D-015 · Mise en service d'un agent
+
+- **Décision** : un agent est créé en brouillon ; il passe en service dès qu'il a au moins un modèle IA dont le fournisseur est toujours connecté (RM-06). Ni poste ni accès MCP ne sont exigés. Un agent en service ne peut pas perdre son dernier modèle : il faut d'abord le repasser en brouillon. Un agent peut recevoir plusieurs modèles, de plusieurs fournisseurs, chacun avec un usage, dont un seul par défaut (RM-10).
+- **Raison** : application directe de RM-06 et RM-10 ; garder la règle vraie dans le temps évite un agent « en service » incapable de travailler.
+- **Alternatives** : repasser automatiquement l'agent en brouillon quand il perd son dernier modèle.
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).
