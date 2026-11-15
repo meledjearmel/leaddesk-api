@@ -74,7 +74,9 @@ class Agent extends Model
     {
         return $this->belongsToMany(AiModel::class, 'agent_ai_model')
             ->withPivot(['purpose', 'is_default'])
-            ->withTimestamps();
+            ->withTimestamps()
+            // Ordre d'affectation : stable d'un moteur de base à l'autre.
+            ->orderBy('agent_ai_model.id');
     }
 
     /**
