@@ -4,6 +4,7 @@ namespace Tests\Feature\Api\V1;
 
 use App\Models\Agent;
 use App\Models\Company;
+use App\Support\CompanySettings;
 use App\Support\OfficeClock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -67,6 +68,7 @@ class CompanySettingsTest extends TestCase
             ->assertJsonPath('data.clock.speed', 48);
 
         $this->assertSame(['simulated_day_minutes' => 30], $this->company->fresh()?->settings);
+        $this->assertSame(['simulated_day_minutes' => 30, 'mission_position_id' => null], CompanySettings::for($this->company->fresh() ?? $this->company));
         $this->assertDatabaseHas('audit_entries', ['company_id' => $this->company->id, 'subject_type' => Company::class, 'event' => 'company.updated']);
 
         $this->patchJson('/api/v1/company/settings', ['simulated_day_minutes' => null])

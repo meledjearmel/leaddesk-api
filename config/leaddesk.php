@@ -27,6 +27,8 @@ return [
 
     'company_settings' => [
         'simulated_day_minutes' => (int) env('LEADDESK_SIMULATED_DAY_MINUTES', 60),
+        // Poste qui reçoit les missions du CEO ; vide : le poste de tête.
+        'mission_position_id' => null,
     ],
 
     'simulated_day_minutes_bounds' => [5, 1440],

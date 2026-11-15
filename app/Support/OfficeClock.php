@@ -17,28 +17,12 @@ class OfficeClock
     public const SECONDS_PER_DAY = 86400;
 
     /**
-     * Réglages effectifs : valeurs de l'entreprise, sinon valeurs par défaut.
-     *
-     * @return array{simulated_day_minutes: int}
-     */
-    public static function settings(Company $company): array
-    {
-        /** @var array{simulated_day_minutes: int} $defaults */
-        $defaults = config('leaddesk.company_settings');
-
-        /** @var array{simulated_day_minutes: int} $settings */
-        $settings = array_replace($defaults, array_intersect_key($company->settings ?? [], $defaults));
-
-        return $settings;
-    }
-
-    /**
      * @return array{real_time: string, simulated_day: int, simulated_time: string, simulated_seconds: int, speed: float}
      */
     public static function at(Company $company, ?Carbon $now = null): array
     {
         $now ??= Carbon::now();
-        $dayMinutes = self::settings($company)['simulated_day_minutes'];
+        $dayMinutes = CompanySettings::for($company)['simulated_day_minutes'];
         $speed = 1440 / $dayMinutes;
 
         // Secondes simulées écoulées depuis l'époque Unix : identiques partout.

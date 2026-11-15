@@ -1,0 +1,544 @@
+[
+    {
+        "id": "open_space",
+        "name": "Open space",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 6,
+        "min_rows": 2,
+        "seats_per_row": 4,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "private_office",
+        "name": "Bureau individuel",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 1,
+        "tags": [
+            "calme",
+            "finance",
+            "recrutement"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "executive_office",
+        "name": "Bureau de direction",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 1,
+        "tags": [
+            "pilotage"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "creative_studio",
+        "name": "Atelier créatif",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "design",
+            "redaction"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "rnd_lab",
+        "name": "Laboratoire R&D",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "conception",
+            "recherche"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "server_room",
+        "name": "Salle des serveurs",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "code",
+            "infrastructure"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "archives",
+        "name": "Salle d'archives",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "documents",
+            "finance"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "meeting_room",
+        "name": "Salle de réunion",
+        "category": "collaboration",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "boardroom",
+        "name": "Salle du conseil",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 6,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "pilotage"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "war_room",
+        "name": "Salle de crise",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "crise",
+            "securite"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "brainstorm_room",
+        "name": "Salle de brainstorming",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "conception",
+            "design",
+            "vente"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "phone_booth",
+        "name": "Cabine d'appel",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 2,
+        "min_rows": 2,
+        "seats_per_row": 0,
+        "tags": [
+            "appels",
+            "vente"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "video_room",
+        "name": "Espace de visioconférence",
+        "category": "collaboration",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "micro_kitchen",
+        "name": "Café",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "cafeteria",
+        "name": "Cafétéria",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 6,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "lounge",
+        "name": "Salon de détente",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "game_room",
+        "name": "Salle de jeux",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "nap_room",
+        "name": "Salle de sieste",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "gym",
+        "name": "Salle de sport et yoga",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "terrace",
+        "name": "Terrasse",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "auditorium",
+        "name": "Auditorium",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 7,
+        "min_rows": 5,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "training_room",
+        "name": "Salle de formation",
+        "category": "knowledge",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "formation",
+            "recrutement"
+        ],
+        "proposed": false
+    },
+    {
+        "id": "library",
+        "name": "Bibliothèque",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "reception",
+        "name": "Hall d'accueil",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "waiting_room",
+        "name": "Salle d'attente",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "print_room",
+        "name": "Reprographie et courrier",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 2,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "restrooms",
+        "name": "Vestiaires et sanitaires",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": false
+    },
+    {
+        "id": "qa_lab",
+        "name": "Laboratoire de tests",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "tests"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "security_center",
+        "name": "Centre de sécurité",
+        "category": "steering",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "securite"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "media_studio",
+        "name": "Studio son et vidéo",
+        "category": "production",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "media",
+            "redaction"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "code_review_room",
+        "name": "Salle de revue de code",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "code"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "kanban_room",
+        "name": "Salle Kanban",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "conception"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "focus_room",
+        "name": "Salle de concentration",
+        "category": "collaboration",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "client_room",
+        "name": "Salle clients",
+        "category": "collaboration",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "vente"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "control_room",
+        "name": "Salle de pilotage",
+        "category": "steering",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "donnees",
+            "pilotage"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "decision_room",
+        "name": "Salle des décisions",
+        "category": "steering",
+        "scope": "department",
+        "min_cols": 5,
+        "min_rows": 4,
+        "seats_per_row": 0,
+        "tags": [
+            "pilotage"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "hr_office",
+        "name": "Bureau RH et entretiens",
+        "category": "steering",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "recrutement"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "finance_office",
+        "name": "Bureau des coûts",
+        "category": "steering",
+        "scope": "department",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "finance"
+        ],
+        "proposed": true
+    },
+    {
+        "id": "meditation_room",
+        "name": "Salle de méditation",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "infirmary",
+        "name": "Infirmerie",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "music_room",
+        "name": "Espace musique",
+        "category": "wellbeing",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "storage",
+        "name": "Entrepôt et stock",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 4,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "shipping",
+        "name": "Expédition et livraisons",
+        "category": "knowledge",
+        "scope": "shared",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [],
+        "proposed": true
+    },
+    {
+        "id": "vault",
+        "name": "Coffre et sauvegardes",
+        "category": "knowledge",
+        "scope": "department",
+        "min_cols": 3,
+        "min_rows": 3,
+        "seats_per_row": 0,
+        "tags": [
+            "donnees",
+            "securite"
+        ],
+        "proposed": true
+    }
+]

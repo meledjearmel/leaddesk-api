@@ -225,6 +225,12 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Écart** : exception à RM-02 (« une entreprise vierge existe sans unité, poste ni agent ») ; voir la proposition ci-dessous.
 - **Note** : le code a été poussé par erreur dans le commit `20d4407`, avec la conversation d'une activité.
 
+### D-034 · Missions du CEO et poste qui les reçoit
+
+- **Décision** : la barre « Donner une mission » crée une mission (`missions` : consigne, projet facultatif, état `received` → `in_progress` → `done`, ou `cancelled`). Elle va à l'agent en service qui occupe le **poste des missions** : réglage `mission_position_id` de l'entreprise, par défaut le premier poste de responsable qui ne rend compte à personne (le COO du modèle studio). Sans agent en service sur ce poste, la mission est refusée (409). Seul le CEO confie et annule ; seul l'agent destinataire (ou le CEO) la rattache à l'activité qui la réalise et la rend avec un compte rendu.
+- **Raison** : D-017 reste à confirmer par Armel ; un réglage rend la réponse indifférente au code : si le « CEO virtuel » devient un poste distinct, il suffit de le choisir.
+- **Alternatives** : mission créée directement comme activité (mélange la demande et son organisation) ; destinataire choisi à chaque mission.
+
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

@@ -48,6 +48,9 @@
             "name": "Conversation"
         },
         {
+            "name": "Missions"
+        },
+        {
             "name": "T\u00e2ches"
         },
         {
@@ -443,7 +446,7 @@
         "/company/settings": {
             "get": {
                 "operationId": "v1.company.settings.show",
-                "description": "`settings` donne les valeurs effectives (celles de l'entreprise, sinon\nles valeurs par d\u00e9faut). `clock` donne le temps simul\u00e9 au moment de la\nr\u00e9ponse ; il se d\u00e9duit du temps r\u00e9el et est identique sur tous les\nordinateurs. Le temps simul\u00e9 ne sert qu'\u00e0 l'ambiance (RM-51).",
+                "description": "`settings` donne les valeurs effectives (celles de l'entreprise, sinon\nles valeurs par d\u00e9faut). `clock` donne le temps simul\u00e9 au moment de la\nr\u00e9ponse ; il se d\u00e9duit du temps r\u00e9el et est identique sur tous les\nordinateurs. Le temps simul\u00e9 ne sert qu'\u00e0 l'ambiance (RM-51).\n`mission_recipient` : poste qui re\u00e7oit les missions du CEO et agent en\nservice qui l'occupe (vides s'il n'y en a pas).",
                 "summary": "Lire les r\u00e9glages et l'horloge du bureau",
                 "tags": [
                     "Entreprise"
@@ -464,10 +467,17 @@
                                                     "properties": {
                                                         "simulated_day_minutes": {
                                                             "type": "integer"
+                                                        },
+                                                        "mission_position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
-                                                        "simulated_day_minutes"
+                                                        "simulated_day_minutes",
+                                                        "mission_position_id"
                                                     ]
                                                 },
                                                 "defaults": {
@@ -475,10 +485,38 @@
                                                     "properties": {
                                                         "simulated_day_minutes": {
                                                             "type": "integer"
+                                                        },
+                                                        "mission_position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
-                                                        "simulated_day_minutes"
+                                                        "simulated_day_minutes",
+                                                        "mission_position_id"
+                                                    ]
+                                                },
+                                                "mission_recipient": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "agent_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "position_id",
+                                                        "agent_id"
                                                     ]
                                                 },
                                                 "clock": {
@@ -512,6 +550,7 @@
                                             "required": [
                                                 "settings",
                                                 "defaults",
+                                                "mission_recipient",
                                                 "clock"
                                             ]
                                         }
@@ -530,7 +569,7 @@
             },
             "patch": {
                 "operationId": "v1.company.settings.update",
-                "description": "R\u00e9serv\u00e9 au CEO : une requ\u00eate au nom d'un agent r\u00e9pond 403.\n`simulated_day_minutes` : dur\u00e9e r\u00e9elle, en minutes, d'une journ\u00e9e\nsimul\u00e9e de 24 h (RM-50). `null` revient \u00e0 la valeur par d\u00e9faut.",
+                "description": "R\u00e9serv\u00e9 au CEO : une requ\u00eate au nom d'un agent r\u00e9pond 403.\n`simulated_day_minutes` : dur\u00e9e r\u00e9elle, en minutes, d'une journ\u00e9e\nsimul\u00e9e de 24 h (RM-50). `mission_position_id` : poste qui re\u00e7oit les\nmissions. `null` revient \u00e0 la valeur par d\u00e9faut.",
                 "summary": "Modifier les r\u00e9glages",
                 "tags": [
                     "Entreprise"
@@ -548,6 +587,12 @@
                                         ],
                                         "minimum": 5,
                                         "maximum": 1440
+                                    },
+                                    "mission_position_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
                                     }
                                 }
                             }
@@ -570,10 +615,17 @@
                                                     "properties": {
                                                         "simulated_day_minutes": {
                                                             "type": "integer"
+                                                        },
+                                                        "mission_position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
-                                                        "simulated_day_minutes"
+                                                        "simulated_day_minutes",
+                                                        "mission_position_id"
                                                     ]
                                                 },
                                                 "defaults": {
@@ -581,10 +633,38 @@
                                                     "properties": {
                                                         "simulated_day_minutes": {
                                                             "type": "integer"
+                                                        },
+                                                        "mission_position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
                                                         }
                                                     },
                                                     "required": [
-                                                        "simulated_day_minutes"
+                                                        "simulated_day_minutes",
+                                                        "mission_position_id"
+                                                    ]
+                                                },
+                                                "mission_recipient": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "position_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "agent_id": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "position_id",
+                                                        "agent_id"
                                                     ]
                                                 },
                                                 "clock": {
@@ -618,6 +698,7 @@
                                             "required": [
                                                 "settings",
                                                 "defaults",
+                                                "mission_recipient",
                                                 "clock"
                                             ]
                                         }
@@ -4375,6 +4456,713 @@
                 "responses": {
                     "204": {
                         "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/missions": {
+            "get": {
+                "operationId": "v1.missions.index",
+                "description": "Les plus r\u00e9centes d'abord ; `status` filtre.",
+                "summary": "Lister les missions",
+                "tags": [
+                    "Missions"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "received",
+                                "in_progress",
+                                "done",
+                                "cancelled"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": {}
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.missions.store",
+                "description": "R\u00e9serv\u00e9 au CEO. R\u00e9pond 409 si aucun agent en service n'occupe le poste\ndes missions : il faut d'abord en mettre un en service ou r\u00e9gler un\nautre poste (`PATCH /company/settings`).",
+                "summary": "Confier une mission",
+                "tags": [
+                    "Missions"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "brief": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    },
+                                    "project_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "brief"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "brief": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "agent_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "project_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "activity_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "brief",
+                                                "status",
+                                                "position_id",
+                                                "agent_id",
+                                                "project_id",
+                                                "activity_id",
+                                                "outcome",
+                                                "closed_at",
+                                                "created_at",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/missions/{mission}": {
+            "get": {
+                "operationId": "v1.missions.show",
+                "summary": "Lire une mission",
+                "tags": [
+                    "Missions"
+                ],
+                "parameters": [
+                    {
+                        "name": "mission",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "brief": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "agent_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "project_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "activity_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "brief",
+                                                "status",
+                                                "position_id",
+                                                "agent_id",
+                                                "project_id",
+                                                "activity_id",
+                                                "outcome",
+                                                "closed_at",
+                                                "created_at",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/missions/{mission}/activity": {
+            "post": {
+                "operationId": "v1.missions.activity",
+                "description": "Par l'agent qui a re\u00e7u la mission, ou par le CEO. La mission passe en\ncours.",
+                "summary": "Rattacher la mission \u00e0 l'activit\u00e9 qui la r\u00e9alise",
+                "tags": [
+                    "Missions"
+                ],
+                "parameters": [
+                    {
+                        "name": "mission",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "activity_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "activity_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "brief": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "agent_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "project_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "activity_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "brief",
+                                                "status",
+                                                "position_id",
+                                                "agent_id",
+                                                "project_id",
+                                                "activity_id",
+                                                "outcome",
+                                                "closed_at",
+                                                "created_at",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/missions/{mission}/complete": {
+            "post": {
+                "operationId": "v1.missions.complete",
+                "description": "Par l'agent qui l'a re\u00e7ue, ou par le CEO, avec un compte rendu.",
+                "summary": "Rendre la mission",
+                "tags": [
+                    "Missions"
+                ],
+                "parameters": [
+                    {
+                        "name": "mission",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "outcome": {
+                                        "type": "string",
+                                        "maxLength": 20000
+                                    }
+                                },
+                                "required": [
+                                    "outcome"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "brief": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "agent_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "project_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "activity_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "brief",
+                                                "status",
+                                                "position_id",
+                                                "agent_id",
+                                                "project_id",
+                                                "activity_id",
+                                                "outcome",
+                                                "closed_at",
+                                                "created_at",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/missions/{mission}/cancel": {
+            "post": {
+                "operationId": "v1.missions.cancel",
+                "description": "R\u00e9serv\u00e9 au CEO.",
+                "summary": "Annuler la mission",
+                "tags": [
+                    "Missions"
+                ],
+                "parameters": [
+                    {
+                        "name": "mission",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "brief": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "position_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "agent_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "project_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "activity_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "brief",
+                                                "status",
+                                                "position_id",
+                                                "agent_id",
+                                                "project_id",
+                                                "activity_id",
+                                                "outcome",
+                                                "closed_at",
+                                                "created_at",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\CostController;
 use App\Http\Controllers\Api\V1\DecisionController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\ExecutionController;
+use App\Http\Controllers\Api\V1\MissionController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RuleController;
@@ -47,6 +48,14 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/company', [CompanyController::class, 'show'])->name('company.show');
         Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
+        Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');
+        Route::post('/missions', [MissionController::class, 'store'])->name('missions.store');
+        Route::controller(MissionController::class)->prefix('missions/{mission}')->whereNumber('mission')->name('missions.')->group(function (): void {
+            Route::get('/', 'show')->name('show');
+            Route::post('/activity', 'link')->name('activity');
+            Route::post('/complete', 'complete')->name('complete');
+            Route::post('/cancel', 'cancel')->name('cancel');
+        });
         Route::get('/company/settings', [CompanySettingsController::class, 'show'])->name('company.settings.show');
         Route::patch('/company/settings', [CompanySettingsController::class, 'update'])->name('company.settings.update');
 
