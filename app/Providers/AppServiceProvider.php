@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Company;
+use App\Models\Position;
+use App\Models\Unit;
+use App\Office\OfficeLayoutWatcher;
 use App\Support\ActingAgent;
 use App\Support\Audit;
 use Carbon\CarbonImmutable;
@@ -33,6 +37,29 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureApiDocs();
+        $this->watchOfficeLayout();
+    }
+
+    /**
+     * D-039 : un changement d'organisation qui ne tient plus dans le plan
+     * du bureau déclenche une demande de réaménagement, une fois la
+     * transaction validée.
+     */
+    protected function watchOfficeLayout(): void
+    {
+        foreach ([Unit::class, Position::class] as $model) {
+            foreach (['saved', 'deleted', 'restored'] as $event) {
+                $model::registerModelEvent($event, function (Unit|Position $changed): void {
+                    $companyId = $changed->company_id;
+
+                    DB::afterCommit(function () use ($companyId): void {
+                        if ($company = Company::query()->find($companyId)) {
+                            app(OfficeLayoutWatcher::class)->check($company);
+                        }
+                    });
+                });
+            }
+        }
     }
 
     /**

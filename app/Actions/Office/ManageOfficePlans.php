@@ -7,6 +7,7 @@ use App\Enums\OfficePlanStatus;
 use App\Models\Agent;
 use App\Models\Company;
 use App\Models\Decision;
+use App\Models\Mission;
 use App\Models\OfficePlan;
 use App\Office\CompanyOfficeDepartments;
 use App\Office\OfficePlanValidator;
@@ -79,6 +80,17 @@ class ManageOfficePlans
                 'subject_id' => $plan->id,
                 'payload' => ['office_plan_id' => $plan->id, 'reason' => $reason],
             ]);
+
+            // D-039 : la demande de réaménagement est remplie.
+            $company->missions()
+                ->where('kind', Mission::KIND_OFFICE_LAYOUT)
+                ->whereIn('status', ['received', 'in_progress'])
+                ->get()
+                ->each(fn (Mission $mission) => $mission->update([
+                    'status' => 'done',
+                    'outcome' => "Proposition de réaménagement (version {$plan->version}) envoyée au CEO.",
+                    'closed_at' => now(),
+                ]));
 
             return $plan;
         });

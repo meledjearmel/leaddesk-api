@@ -252,6 +252,13 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Qui propose** (D-012 de `leaddesk-app`) : la permission d'outil `office.propose_plan` du catalogue des outils, refusée par défaut grâce au nouveau réglage `leaddesk.tool_defaults`. Le responsable des Moyens généraux la reçoit : celui créé d'office et celui du modèle studio. Le CEO peut la donner à un autre poste (RM-03). Le CEO lui-même ne propose pas par le MCP : il dessine le plan directement.
 - **Décisions synchronisées** : accepter ou refuser par les routes du plan ou par celles des décisions donne le même résultat. Une proposition périmée ferme sa décision avec une note.
 - **Alternatives** : un serveur MCP par domaine (prématuré) ; une IA d'aménagement hors organigramme (écartée par D-012).
+### D-039 · Réaménagement demandé automatiquement
+
+- **Décision** (D-012 de `leaddesk-app`) : après chaque changement d'unité ou de poste (création, modification, mise à la corbeille, restauration), une fois la transaction validée, `OfficeLayoutWatcher` vérifie que le plan en vigueur tient encore. Il faut que les règles soient respectées et que chaque département ait au moins une salle. Sinon, une mission `kind = office_layout` est confiée au poste qui a l'outil `office.propose_plan`, de préférence un poste de responsable. Elle va à son agent en service, ou reste sans agent s'il n'y en a pas. La consigne liste les problèmes et indique les outils à utiliser.
+- **Regroupement** : une seule demande ouverte à la fois ; les changements suivants ne créent rien de plus. La demande se ferme (`done`) dès qu'une proposition est envoyée.
+- **Sans plan en vigueur**, rien n'est demandé : l'application utilise son aménageur automatique.
+- **Missions** : nouvelle colonne `missions.kind` (vide pour une mission du CEO), renvoyée par `GET /missions`.
+- **Alternatives** : une tâche dans une activité (il faudrait un type d'activité dédié dans chaque entreprise) ; une tâche planifiée qui vérifie à intervalle régulier (moins réactive).
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

@@ -193,6 +193,8 @@ class MissionController extends ApiController
     {
         return [
             'id' => $m->id,
+            // Vide pour une mission du CEO ; office_layout : réaménagement demandé d'office.
+            'kind' => $m->kind,
             'brief' => $m->brief,
             'status' => $m->status,
             'position_id' => $m->position_id,

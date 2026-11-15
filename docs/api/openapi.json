@@ -5209,6 +5209,13 @@
                                                 "id": {
                                                     "type": "integer"
                                                 },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Vide pour une mission du CEO ; office_layout : r\u00e9am\u00e9nagement demand\u00e9 d'office."
+                                                },
                                                 "brief": {
                                                     "type": "string"
                                                 },
@@ -5266,6 +5273,7 @@
                                             },
                                             "required": [
                                                 "id",
+                                                "kind",
                                                 "brief",
                                                 "status",
                                                 "position_id",
@@ -5345,6 +5353,13 @@
                                                 "id": {
                                                     "type": "integer"
                                                 },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Vide pour une mission du CEO ; office_layout : r\u00e9am\u00e9nagement demand\u00e9 d'office."
+                                                },
                                                 "brief": {
                                                     "type": "string"
                                                 },
@@ -5402,6 +5417,7 @@
                                             },
                                             "required": [
                                                 "id",
+                                                "kind",
                                                 "brief",
                                                 "status",
                                                 "position_id",
@@ -5478,6 +5494,13 @@
                                                 "id": {
                                                     "type": "integer"
                                                 },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Vide pour une mission du CEO ; office_layout : r\u00e9am\u00e9nagement demand\u00e9 d'office."
+                                                },
                                                 "brief": {
                                                     "type": "string"
                                                 },
@@ -5535,6 +5558,7 @@
                                             },
                                             "required": [
                                                 "id",
+                                                "kind",
                                                 "brief",
                                                 "status",
                                                 "position_id",
@@ -5615,6 +5639,13 @@
                                                 "id": {
                                                     "type": "integer"
                                                 },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Vide pour une mission du CEO ; office_layout : r\u00e9am\u00e9nagement demand\u00e9 d'office."
+                                                },
                                                 "brief": {
                                                     "type": "string"
                                                 },
@@ -5672,6 +5703,7 @@
                                             },
                                             "required": [
                                                 "id",
+                                                "kind",
                                                 "brief",
                                                 "status",
                                                 "position_id",
@@ -5733,6 +5765,13 @@
                                                 "id": {
                                                     "type": "integer"
                                                 },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Vide pour une mission du CEO ; office_layout : r\u00e9am\u00e9nagement demand\u00e9 d'office."
+                                                },
                                                 "brief": {
                                                     "type": "string"
                                                 },
@@ -5790,6 +5829,7 @@
                                             },
                                             "required": [
                                                 "id",
+                                                "kind",
                                                 "brief",
                                                 "status",
                                                 "position_id",

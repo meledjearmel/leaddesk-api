@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $agent_id
  * @property int|null $project_id
  * @property int|null $activity_id
+ * @property string|null $kind
  * @property string $brief
  * @property string $status
  * @property string|null $outcome
@@ -25,7 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-#[Fillable(['company_id', 'position_id', 'agent_id', 'project_id', 'activity_id', 'brief', 'status', 'outcome', 'closed_at'])]
+#[Fillable(['company_id', 'position_id', 'agent_id', 'project_id', 'activity_id', 'kind', 'brief', 'status', 'outcome', 'closed_at'])]
 class Mission extends Model
 {
     use Audited;
@@ -36,6 +37,9 @@ class Mission extends Model
      * activité ; done : rendue ; cancelled : annulée par le CEO.
      */
     public const array STATUSES = ['received', 'in_progress', 'done', 'cancelled'];
+
+    /** Demande de réaménagement créée d'office (D-039). */
+    public const string KIND_OFFICE_LAYOUT = 'office_layout';
 
     public function isOpen(): bool
     {
