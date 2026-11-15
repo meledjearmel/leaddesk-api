@@ -259,6 +259,10 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Sans plan en vigueur**, rien n'est demandé : l'application utilise son aménageur automatique.
 - **Missions** : nouvelle colonne `missions.kind` (vide pour une mission du CEO), renvoyée par `GET /missions`.
 - **Alternatives** : une tâche dans une activité (il faudrait un type d'activité dédié dans chaque entreprise) ; une tâche planifiée qui vérifie à intervalle régulier (moins réactive).
+### D-040 · Paramètres du temps réel pour l'application
+
+- **Décision** : `GET /api/v1/realtime` renvoie de quoi se connecter à Reverb : clé publique, hôte, port, `ws` ou `wss`, et le canal privé de l'entreprise (`private-company.{id}`). Le secret reste sur le serveur. L'application n'a donc rien à configurer pour le temps réel.
+- **Diffusion** : toute ressource journalisée est déjà diffusée par `company.changed`, y compris les plans d'aménagement, les décisions et les missions (testé pour `office_plan.created`).
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

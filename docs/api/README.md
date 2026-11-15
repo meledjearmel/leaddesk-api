@@ -38,7 +38,8 @@ Les descriptions viennent des commentaires des contrôleurs (première ligne : t
 
 Le temps réel n'entre pas dans OpenAPI ; il est décrit ici.
 
-- **Connexion** : protocole Pusher sur `ws(s)://{REVERB_HOST}:{REVERB_PORT}/app/{REVERB_APP_KEY}`.
+- **Où se connecter** : `GET /api/v1/realtime` renvoie la clé publique, l'hôte, le port, le schéma (`ws` ou `wss`) et le canal de l'entreprise (D-040). Le secret ne quitte jamais le serveur.
+- **Connexion** : protocole Pusher sur `ws(s)://{host}:{port}/app/{key}`.
 - **Abonnement à un canal privé** : `POST /api/v1/broadcasting/auth` avec le jeton Sanctum et le corps `{ "socket_id": "…", "channel_name": "private-…" }` ; la réponse `{ "auth": "…" }` est transmise à Reverb dans `pusher:subscribe`.
 
 ### Canal `private-company.{id}`
@@ -61,7 +62,7 @@ Réservé au CEO de l'entreprise `{id}`.
 ```
 
 - `id` : identifiant de l'entrée du journal (`GET /audit-entries`).
-- `event` : `<ressource>.<verbe>` — ressources `company`, `unit`, `position`, `agent`, `ai_provider`, `ai_model` ; verbes `created`, `updated`, `deleted`, `restored`, et pour un agent `position_changed` et `ai_models_changed`.
+- `event` : `<ressource>.<verbe>` — toute ressource journalisée, dont `company`, `unit`, `position`, `agent`, `ai_provider`, `ai_model`, `office_plan`, `decision`, `mission` ; verbes `created`, `updated`, `deleted`, `restored`, et pour un agent `position_changed` et `ai_models_changed`.
 - `subject_id` : identifiant de la ressource concernée.
 
 L'événement passe par la file d'attente et n'est émis qu'une fois la transaction validée : un worker (`php artisan queue:work`) doit tourner à côté de Reverb.

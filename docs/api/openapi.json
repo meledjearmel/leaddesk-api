@@ -42,6 +42,9 @@
             "name": "Am\u00e9nagement"
         },
         {
+            "name": "Temps r\u00e9el"
+        },
+        {
             "name": "Projets"
         },
         {
@@ -3991,6 +3994,80 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/ProjectResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/realtime": {
+            "get": {
+                "operationId": "v1.realtime",
+                "description": "Adresse publique de Reverb, cl\u00e9 publique de l'application (protocole\nPusher) et canal priv\u00e9 de l'entreprise. Le secret ne quitte jamais le\nserveur ; l'abonnement au canal passe par `POST /broadcasting/auth`.",
+                "summary": "Connexion au temps r\u00e9el",
+                "tags": [
+                    "Temps r\u00e9el"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "key": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Cl\u00e9 publique de l'application Reverb."
+                                                },
+                                                "host": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "port": {
+                                                    "type": "integer"
+                                                },
+                                                "scheme": {
+                                                    "type": "string",
+                                                    "description": "`wss` si Reverb est servi en HTTPS, `ws` sinon.",
+                                                    "enum": [
+                                                        "wss",
+                                                        "ws"
+                                                    ]
+                                                },
+                                                "channel": {
+                                                    "type": "string"
+                                                },
+                                                "event": {
+                                                    "type": "string",
+                                                    "const": "company.changed"
+                                                }
+                                            },
+                                            "required": [
+                                                "key",
+                                                "host",
+                                                "port",
+                                                "scheme",
+                                                "channel",
+                                                "event"
+                                            ]
                                         }
                                     },
                                     "required": [

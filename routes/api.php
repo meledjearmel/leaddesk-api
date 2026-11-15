@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\MissionController;
 use App\Http\Controllers\Api\V1\OfficePlanController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\RealtimeController;
 use App\Http\Controllers\Api\V1\RuleController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\TaskRunController;
@@ -47,6 +48,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/user', [AuthController::class, 'show'])->name('user');
 
         Route::get('/company', [CompanyController::class, 'show'])->name('company.show');
+        Route::get('/realtime', [RealtimeController::class, 'show'])->name('realtime');
         Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
         Route::patch('/company', [CompanyController::class, 'update'])->name('company.update');
         Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');

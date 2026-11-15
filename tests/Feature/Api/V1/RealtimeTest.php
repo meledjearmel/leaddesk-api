@@ -22,6 +22,60 @@ class RealtimeTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * D-040 : l'application apprend où se connecter, sans jamais recevoir le secret.
+     */
+    public function test_the_app_gets_the_public_connection_details_and_its_channel(): void
+    {
+        config([
+            'broadcasting.connections.reverb.key' => 'cle-publique',
+            'broadcasting.connections.reverb.secret' => 'secret-serveur',
+            'broadcasting.connections.reverb.options' => ['host' => 'temps-reel.test', 'port' => 443, 'scheme' => 'https'],
+        ]);
+        $company = Company::factory()->create();
+        Sanctum::actingAs($company->user);
+
+        $response = $this->getJson('/api/v1/realtime')
+            ->assertOk()
+            ->assertExactJson(['data' => [
+                'key' => 'cle-publique',
+                'host' => 'temps-reel.test',
+                'port' => 443,
+                'scheme' => 'wss',
+                'channel' => 'private-company.'.$company->id,
+                'event' => 'company.changed',
+            ]]);
+
+        $this->assertStringNotContainsString('secret-serveur', (string) $response->getContent());
+        $this->app['auth']->forgetGuards();
+    }
+
+    public function test_the_realtime_details_require_a_token(): void
+    {
+        $this->getJson('/api/v1/realtime')->assertUnauthorized();
+    }
+
+    /**
+     * Les propositions d'aménagement et les missions sont diffusées comme le reste.
+     */
+    public function test_office_plans_are_broadcast_too(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $this->postJson('/api/v1/company', ['name' => 'Atelier', 'template' => 'blank'])->assertCreated();
+        $company = Company::query()->sole();
+        $hr = (string) $company->units()->where('system_role', 'hr')->sole()->id;
+        $facilities = (string) $company->units()->where('system_role', 'facilities')->sole()->id;
+        Event::fake([CompanyChanged::class]);
+
+        $this->putJson('/api/v1/office/plan', ['layout' => ['cols' => 20, 'rows' => 10, 'rooms' => [
+            ['id' => 'rh', 'type' => 'private_office', 'department' => $hr, 'x' => 0, 'y' => 0, 'cols' => 3, 'rows' => 3],
+            ['id' => 'mg', 'type' => 'private_office', 'department' => $facilities, 'x' => 4, 'y' => 0, 'cols' => 3, 'rows' => 3],
+        ]]])->assertCreated();
+
+        Event::assertDispatched(fn (CompanyChanged $event): bool => $event->broadcastWith()['event'] === 'office_plan.created');
+    }
+
     public function test_every_change_is_broadcast_on_the_private_channel_of_the_company(): void
     {
         $company = Company::factory()->create();
