@@ -215,6 +215,17 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Raison** : le plan (phase 5) et la référence `07-interface-sombre-conversation.png` demandent ces deux onglets ; le modèle de contexte partagé restant « à concevoir », la forme la plus simple (notes ordonnées) est retenue. « Les agents ne prennent la parole que lorsqu'ils sont concernés » (`CONCEPTION_STUDIO_VIRTUEL.md`) devient la règle des participants.
 - **Alternatives** : conversations indépendantes des activités (direction, réunions), à ajouter plus tard ; participants choisis à la main ; contexte versionné.
 
+## Gestion des salles
+
+### D-034 · Unités système RH et Moyens généraux
+
+- **Décision** (Armel, 15 novembre 2026 ; D-012 et D-013 de `leaddesk-app`) : toute entreprise, même vierge, possède une unité RH et une unité Moyens généraux, repérées par `units.system_role` (`hr`, `facilities`). `EnsureSystemUnits`, appelé par `CreateCompany` après le modèle, crée celles qui manquent : unité de premier niveau avec un poste de responsable en brouillon, sans agent. Le modèle studio les porte lui-même : « Ressources humaines » (`hr`) et le pôle « Moyens généraux » (`facilities`) sous « Administration et finances », ce qui garde ses huit départements (RM-04).
+- **Règles** : nom et couleur modifiables ; suppression refusée (409) ; `system_role` n'est pas modifiable par l'API ; index unique partiel `(company_id, system_role)`.
+- **Raison** : la RH propose les agents et les Moyens généraux proposent l'aménagement ; le code s'appuie sur le rôle, jamais sur le nom (RM-03).
+- **Écart** : exception à RM-02 (« une entreprise vierge existe sans unité, poste ni agent ») ; voir la proposition ci-dessous.
+- **Note** : le code a été poussé par erreur dans le commit `20d4407`, avec la conversation d'une activité.
+
 ## Propositions de mise à jour des documents de conception
 
+- `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).
