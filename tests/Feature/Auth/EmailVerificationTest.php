@@ -86,7 +86,9 @@ class EmailVerificationTest extends TestCase
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
-            ['id' => 123, 'hash' => sha1($user->email)],
+            // Un identifiant qui n'existe pas, quel que soit l'état des compteurs
+            // de la base (PostgreSQL ne les remet pas à zéro entre les tests).
+            ['id' => $user->id + 1, 'hash' => sha1($user->email)],
         );
 
         $this->actingAs($user)->get($verificationUrl);
