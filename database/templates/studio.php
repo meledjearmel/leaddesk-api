@@ -12,7 +12,8 @@
 | Tous les postes et agents créés depuis ce modèle sont en brouillon.
 |
 | Structure d'une unité : name, kind, system_role (facultatif : hr ou
-| facilities, D-013), color, positions[], children[].
+| facilities, D-034), activity_tags (facultatif : étiquettes de
+| resources/office/activity-tags.json, D-037), color, positions[], children[].
 | Structure d'un poste : key (unique dans le fichier), title, mission,
 | responsibilities[], is_head, reports_to (clé d'un autre poste, ou null
 | pour un poste qui rend compte au CEO), agent { name, bio }.
@@ -44,6 +45,7 @@ return [
         [
             'name' => 'Direction',
             'kind' => 'Département',
+            'activity_tags' => ['pilotage', 'donnees'],
             'color' => '#C9A227',
             'positions' => [
                 $head('coo', 'COO', 'Coordonner au quotidien les responsables et orienter chaque demande du CEO vers le bon département.', [
@@ -61,6 +63,7 @@ return [
         [
             'name' => 'Produit',
             'kind' => 'Département',
+            'activity_tags' => ['conception', 'design'],
             'color' => '#7C6BD6',
             'positions' => [
                 $head('product-head', 'Responsable Produit', 'Cadrer les besoins et le périmètre avec le CEO, puis recommander les priorités.', [
@@ -78,6 +81,7 @@ return [
         [
             'name' => 'Technique',
             'kind' => 'Département',
+            'activity_tags' => ['code', 'infrastructure'],
             'color' => '#5B8DEF',
             'positions' => [
                 $head('tech-head', 'Responsable Technique', 'Garantir la qualité technique des livrables et organiser les pôles techniques.', [
@@ -155,6 +159,7 @@ return [
             // RM-07 : département distinct des équipes qui produisent les livrables.
             'name' => 'Qualité et sécurité',
             'kind' => 'Département',
+            'activity_tags' => ['tests', 'securite'],
             'color' => '#E56B8C',
             'positions' => [
                 $head('quality-head', 'Responsable Qualité et sécurité', 'Faire une revue indépendante des livrables avant leur livraison.', [
@@ -198,6 +203,7 @@ return [
         [
             'name' => 'Contenu',
             'kind' => 'Département',
+            'activity_tags' => ['redaction', 'media'],
             'color' => '#F08A5D',
             'positions' => [
                 $head('content-head', 'Responsable Contenu', 'Tenir la ligne éditoriale et valider les contenus avant publication.', [
@@ -213,6 +219,7 @@ return [
         [
             'name' => 'Marketing et commercial',
             'kind' => 'Département',
+            'activity_tags' => ['vente', 'appels', 'media'],
             'color' => '#6BBF59',
             'positions' => [
                 $head('marketing-head', 'Responsable Marketing et commercial', 'Faire connaître le studio et qualifier les demandes entrantes.', [
@@ -229,6 +236,7 @@ return [
         [
             'name' => 'Ressources humaines',
             'kind' => 'Département',
+            'activity_tags' => ['recrutement', 'formation', 'calme'],
             'system_role' => 'hr',
             'color' => '#B58BD9',
             'positions' => [
@@ -247,6 +255,7 @@ return [
         [
             'name' => 'Administration et finances',
             'kind' => 'Département',
+            'activity_tags' => ['finance', 'documents', 'calme'],
             'color' => '#5FA8A0',
             'positions' => [
                 $head('finance-head', 'Responsable Administration et finances', 'Suivre les coûts et préparer devis et factures.', [

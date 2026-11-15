@@ -29,6 +29,19 @@ enum SystemRole: string
         };
     }
 
+    /**
+     * Activités données à l'unité créée d'office (D-037).
+     *
+     * @return list<string>
+     */
+    public function defaultActivityTags(): array
+    {
+        return match ($this) {
+            self::Hr => ['recrutement', 'formation', 'calme'],
+            self::Facilities => ['documents'],
+        };
+    }
+
     public function headTitle(): string
     {
         return match ($this) {

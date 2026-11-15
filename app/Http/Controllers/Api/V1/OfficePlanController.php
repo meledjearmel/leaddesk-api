@@ -6,6 +6,7 @@ use App\Actions\Office\ManageOfficePlans;
 use App\Enums\OfficePlanStatus;
 use App\Http\Resources\V1\OfficePlanResource;
 use App\Models\OfficePlan;
+use App\Office\ActivityTags;
 use App\Office\CompanyOfficeDepartments;
 use App\Office\OfficeDepartment;
 use App\Office\OfficePlanValidator;
@@ -53,7 +54,22 @@ class OfficePlanController extends ApiController
             'id' => $department->id,
             'name' => $department->name,
             'headcount' => $department->headcount,
+            /** Couleur #RRGGBB de l'unité, vide si elle n'en a pas. */
+            'color' => $department->color,
+            /** Étiquettes d'activité de l'unité. */
+            'tags' => $department->tags,
         ], $departments->for($this->company($request)))]);
+    }
+
+    /**
+     * Étiquettes d'activité reconnues.
+     *
+     * Une unité porte celles de ses activités (`activity_tags`) ; les types de
+     * salle servent ces mêmes étiquettes.
+     */
+    public function activityTags(): JsonResponse
+    {
+        return response()->json(['data' => ActivityTags::all()]);
     }
 
     /**

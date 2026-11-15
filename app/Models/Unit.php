@@ -24,13 +24,14 @@ use Illuminate\Support\Carbon;
  * @property string|null $kind
  * @property SystemRole|null $system_role
  * @property string|null $color
+ * @property list<string>|null $activity_tags
  * @property int $sort_order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property-read Unit|null $parent
  */
-#[Fillable(['company_id', 'parent_id', 'name', 'kind', 'system_role', 'color', 'sort_order'])]
+#[Fillable(['company_id', 'parent_id', 'name', 'kind', 'system_role', 'color', 'activity_tags', 'sort_order'])]
 class Unit extends Model
 {
     use Audited;
@@ -128,6 +129,7 @@ class Unit extends Model
         return [
             'sort_order' => 'integer',
             'system_role' => SystemRole::class,
+            'activity_tags' => 'array',
         ];
     }
 }

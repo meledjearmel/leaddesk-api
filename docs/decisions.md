@@ -239,6 +239,11 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Départements** : les unités de premier niveau ; l'effectif compte les postes de l'unité et de ses sous-unités. Dans un plan, `department` est l'identifiant de l'unité, en texte.
 - **Journal** : chaque changement d'état est tracé (RM-34) et diffusé par Reverb ; le plan lui-même n'est pas recopié dans le journal.
 - **Alternatives** : stocker le plan dans les réglages de l'entreprise (pas d'historique ni de propositions) ; passer par les décisions génériques (`Decision`) dès maintenant, ce qui sera fait par le MCP à l'étape 3.
+### D-037 · Activités des unités pour l'aménagement
+
+- **Décision** : une unité porte des étiquettes d'activité (`units.activity_tags`), choisies parmi `resources/office/activity-tags.json` (exporté de `ActivityTag.all` de l'application, servi par `GET /office/activity-tags`). L'aménagement en déduit les salles spécialisées dont l'unité a besoin. `GET /office/departments` renvoie aussi la couleur et les étiquettes. Le modèle studio reprend les activités du modèle de l'application ; les unités système reçoivent des activités par défaut (RH : recrutement, formation, calme ; Moyens généraux : documents).
+- **Raison** : l'aménageur de l'application choisit les salles selon les activités ; sans elles, les départements venus du serveur n'auraient que des salles de travail. Les étiquettes restent modifiables par le CEO (RM-03).
+- **Alternatives** : déduire les activités des types d'activité rattachés à l'unité (trop pauvres aujourd'hui pour choisir une salle).
 ## Propositions de mise à jour des documents de conception
 
 - `REGLES_METIER_LEADDESK.md` (RM-02) : une entreprise vierge contient toujours les unités RH et Moyens généraux, chacune avec un poste de responsable sans agent (D-034).

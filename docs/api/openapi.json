@@ -2989,6 +2989,42 @@
                 }
             }
         },
+        "/office/activity-tags": {
+            "get": {
+                "operationId": "v1.office.activity-tags",
+                "description": "Une unit\u00e9 porte celles de ses activit\u00e9s (`activity_tags`) ; les types de\nsalle servent ces m\u00eames \u00e9tiquettes.",
+                "summary": "\u00c9tiquettes d'activit\u00e9 reconnues",
+                "tags": [
+                    "Am\u00e9nagement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/office/plan": {
             "get": {
                 "operationId": "v1.office.plan",
@@ -10239,6 +10275,13 @@
                         ],
                         "description": "Couleur d'affichage au format #RRGGBB."
                     },
+                    "activity_tags": {
+                        "type": "array",
+                        "description": "Activit\u00e9s de l'unit\u00e9 (`code`, `recrutement`\u2026) : l'am\u00e9nagement\nen d\u00e9duit les salles sp\u00e9cialis\u00e9es dont elle a besoin.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "sort_order": {
                         "type": "integer"
                     },
@@ -10272,6 +10315,7 @@
                     "kind",
                     "system_role",
                     "color",
+                    "activity_tags",
                     "sort_order",
                     "created_at",
                     "updated_at",

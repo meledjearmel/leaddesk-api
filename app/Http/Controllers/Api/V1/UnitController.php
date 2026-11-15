@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Resources\V1\UnitResource;
 use App\Models\Company;
 use App\Models\Unit;
+use App\Office\ActivityTags;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -150,6 +151,9 @@ class UnitController extends ApiController
             // Couleur au format #RRGGBB.
             'color' => ['sometimes', 'nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'sort_order' => ['sometimes', 'integer', 'min:0', 'max:100000'],
+            // Activités de l'unité, pour l'aménagement : étiquettes de `GET /office/activity-tags`.
+            'activity_tags' => ['sometimes', 'nullable', 'array', 'max:20'],
+            'activity_tags.*' => ['string', 'distinct', Rule::in(ActivityTags::all())],
         ]);
     }
 }

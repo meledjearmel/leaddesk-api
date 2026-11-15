@@ -20,7 +20,7 @@ class CompanyOfficeDepartments
      */
     public function for(Company $company): array
     {
-        $units = $company->units()->get(['id', 'parent_id', 'name', 'sort_order']);
+        $units = $company->units()->get(['id', 'parent_id', 'name', 'color', 'activity_tags', 'sort_order']);
         /** @var array<int, int> $positions */
         $positions = $company->positions()
             ->selectRaw('unit_id, count(*) as total')
@@ -41,7 +41,13 @@ class CompanyOfficeDepartments
         $departments = [];
 
         foreach ($units->whereNull('parent_id')->sortBy([['sort_order', 'asc'], ['id', 'asc']]) as $unit) {
-            $departments[] = new OfficeDepartment((string) $unit->id, $unit->name, $headcounts[$unit->id] ?? 0);
+            $departments[] = new OfficeDepartment(
+                (string) $unit->id,
+                $unit->name,
+                $headcounts[$unit->id] ?? 0,
+                $unit->color,
+                $unit->activity_tags ?? [],
+            );
         }
 
         return $departments;

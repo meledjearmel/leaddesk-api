@@ -117,9 +117,38 @@ class OfficePlanTest extends TestCase
         $this->getJson('/api/v1/office/departments')
             ->assertOk()
             ->assertExactJson(['data' => [
-                ['id' => $this->hr, 'name' => 'Ressources humaines', 'headcount' => 1],
-                ['id' => $this->facilities, 'name' => 'Moyens généraux', 'headcount' => 1],
+                ['id' => $this->hr, 'name' => 'Ressources humaines', 'headcount' => 1, 'color' => '#B58BD9', 'tags' => ['recrutement', 'formation', 'calme']],
+                ['id' => $this->facilities, 'name' => 'Moyens généraux', 'headcount' => 1, 'color' => '#8C9A5B', 'tags' => ['documents']],
             ]]);
+    }
+
+    /**
+     * D-037 et RM-03 : les activités d'une unité se règlent librement, parmi
+     * les étiquettes connues du catalogue.
+     */
+    public function test_rm03_unit_activity_tags_are_configurable_among_known_tags(): void
+    {
+        $this->getJson('/api/v1/office/activity-tags')->assertOk()->assertJsonFragment(['code']);
+
+        $this->patchJson("/api/v1/units/{$this->hr}", ['activity_tags' => ['code', 'tests']])
+            ->assertOk()
+            ->assertJsonPath('data.activity_tags', ['code', 'tests']);
+
+        $this->patchJson("/api/v1/units/{$this->hr}", ['activity_tags' => ['teleportation']])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['activity_tags.0']);
+    }
+
+    public function test_the_studio_template_gives_each_department_its_activities(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+        $this->postJson('/api/v1/company', ['name' => 'Studio', 'template' => 'studio'])->assertCreated();
+
+        $departments = collect($this->getJson('/api/v1/office/departments')->json('data'))->keyBy('name');
+
+        $this->assertSame(['code', 'infrastructure'], $departments['Technique']['tags']);
+        $this->assertSame(['finance', 'documents', 'calme'], $departments['Administration et finances']['tags']);
+        $this->assertCount(8, $departments);
     }
 
     public function test_there_is_no_current_plan_at_first(): void

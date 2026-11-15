@@ -138,6 +138,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::controller(OfficePlanController::class)->prefix('office')->name('office.')->group(function (): void {
             Route::get('/room-types', 'roomTypes')->name('room-types');
             Route::get('/departments', 'departments')->name('departments');
+            Route::get('/activity-tags', 'activityTags')->name('activity-tags');
             Route::get('/plan', 'current')->name('plan');
             Route::put('/plan', 'save')->name('plan.save');
             Route::post('/plan/check', 'check')->name('plan.check');

@@ -25,6 +25,7 @@ class EnsureSystemUnits
                 'kind' => 'Département',
                 'system_role' => $role,
                 'color' => $role->defaultColor(),
+                'activity_tags' => $role->defaultActivityTags(),
                 'sort_order' => (int) $company->units()->whereNull('parent_id')->max('sort_order') + 1,
             ]);
 

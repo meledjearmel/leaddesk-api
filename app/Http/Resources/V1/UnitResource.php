@@ -30,6 +30,11 @@ class UnitResource extends JsonResource
             'system_role' => $this->system_role?->value,
             /** Couleur d'affichage au format #RRGGBB. */
             'color' => $this->color,
+            /**
+             * Activités de l'unité (`code`, `recrutement`…) : l'aménagement
+             * en déduit les salles spécialisées dont elle a besoin.
+             */
+            'activity_tags' => $this->activity_tags ?? [],
             'sort_order' => $this->sort_order,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
