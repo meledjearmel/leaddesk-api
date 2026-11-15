@@ -64,6 +64,9 @@
         },
         {
             "name": "Permissions d'ex\u00e9cution"
+        },
+        {
+            "name": "Contexte des agents"
         }
     ],
     "security": [
@@ -6336,6 +6339,258 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agents/{agent}/tasks/{task}/context": {
+            "get": {
+                "operationId": "v1.agents.tasks.context",
+                "description": "R\u00e9serv\u00e9 aux agents affect\u00e9s \u00e0 la t\u00e2che (et au CEO). Contient le poste\nde l'agent, l'objectif de l'activit\u00e9, ses champs, les t\u00e2ches li\u00e9es et\nqui fait quoi, les personnes impliqu\u00e9es, qui contacter (responsables des\n\u00e9quipes), les r\u00e8gles applicables et les permissions d'ex\u00e9cution.",
+                "summary": "Lire le contexte d'un agent pour une t\u00e2che",
+                "tags": [
+                    "Contexte des agents"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "agent": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "position": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "mission": {
+                                                                    "type": "string"
+                                                                },
+                                                                "responsibilities": {
+                                                                    "anyOf": [
+                                                                        {
+                                                                            "type": "string"
+                                                                        },
+                                                                        {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "minItems": 0,
+                                                                            "maxItems": 0
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "unit": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "title",
+                                                                "mission",
+                                                                "responsibilities",
+                                                                "unit"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "position"
+                                                    ]
+                                                },
+                                                "task": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "description": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "description"
+                                                    ]
+                                                },
+                                                "activity": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "objective": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        },
+                                                        "field_values": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "objective",
+                                                        "type",
+                                                        "field_values",
+                                                        "due_at"
+                                                    ]
+                                                },
+                                                "related_tasks": {
+                                                    "type": "string"
+                                                },
+                                                "people": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "agent_id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "agent_id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "contacts": {
+                                                    "type": "string"
+                                                },
+                                                "rules": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "body"
+                                                        ]
+                                                    }
+                                                },
+                                                "tool_permissions": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "agent",
+                                                "task",
+                                                "activity",
+                                                "related_tasks",
+                                                "people",
+                                                "contacts",
+                                                "rules",
+                                                "tool_permissions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

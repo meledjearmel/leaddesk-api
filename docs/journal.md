@@ -88,3 +88,24 @@ Bilan court de chaque étape et de chaque phase : fait, testé, reste à faire.
 
 - Règles par projet, poste ou agent ; transitions de workflow configurables (D-020, D-025).
 - RM-22 et RM-23 (modèles de projet) : phase 11.
+
+## Phase 4 — Moteur d'exécution des agents, partie serveur (15 novembre 2026)
+
+**Fait**
+
+- Ordinateurs hôtes enregistrés, présence par signe de vie ; exécutions de tâche rattachées à un agent et à un hôte ; « en attente de l'hôte » quand l'application est fermée, reprise à la réouverture (D-029).
+- Coûts réels par appel rattachés à l'agent, la tâche, l'activité et le projet, estimations à part (RM-35) ; limites par entreprise, projet ou tâche, pause automatique et décision du CEO pour reprendre (RM-36, D-030).
+- Permissions d'exécution par poste (autorisé, soumis à approbation, interdit) et dossiers autorisés par projet et par ordinateur (D-031).
+- Contexte de l'agent pour une tâche (RM-33), lecture journalisée comme consultation (RM-34).
+
+**Testé**
+
+- Tests qui citent RM-33, RM-34, RM-35, RM-36 ; isolation entre entreprises ; 205 tests verts, CI SQLite et PostgreSQL.
+
+**Critère de fin : non vérifiable côté serveur seul**
+
+- « Un agent lit des fichiers d'un dossier autorisé, produit un livrable, consigne ses actions et son coût ; une limite basse met la tâche en pause » : la partie serveur (coûts, pause, journal, dossiers, permissions) est faite et testée ; la boucle d'agent dans l'application relève de l'autre session (D-019). L'appel réel au fournisseur attend toujours une clé.
+
+**Reste à faire**
+
+- Compte rendu de tâche du modèle studio : écrit par l'agent dans le dossier de documentation, sur l'hôte ; le serveur n'en garde rien (fichier de travail).

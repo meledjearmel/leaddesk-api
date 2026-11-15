@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Controllers\Api\V1\ActivityTypeController;
+use App\Http\Controllers\Api\V1\AgentContextController;
 use App\Http\Controllers\Api\V1\AgentController;
 use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuditEntryController;
@@ -128,6 +129,7 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
         Route::get('/cost-limits', [CostController::class, 'limits'])->name('cost-limits.index');
         Route::put('/cost-limits', [CostController::class, 'setLimit'])->name('cost-limits.set');
 
+        Route::get('/agents/{agent}/tasks/{task}/context', [AgentContextController::class, 'show'])->whereNumber(['agent', 'task'])->name('agents.tasks.context');
         Route::get('/execution/tools', [ExecutionController::class, 'catalog'])->name('execution.tools');
         Route::put('/positions/{position}/tool-permissions', [ExecutionController::class, 'setPositionPermissions'])->whereNumber('position')->name('positions.tool-permissions');
         Route::get('/agents/{agent}/execution-profile', [ExecutionController::class, 'agentProfile'])->whereNumber('agent')->name('agents.execution-profile');
