@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * Mission confiée par le CEO au poste qui reçoit les missions (D-017, D-034).
+ * Mission confiée par le CEO au poste qui reçoit les missions (D-017, D-035).
  *
  * @property int $id
  * @property int $company_id
