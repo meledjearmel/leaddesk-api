@@ -4,6 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Présence des ordinateurs
+    |--------------------------------------------------------------------------
+    |
+    | Délai, en secondes, sans signe de vie au-delà duquel un ordinateur hôte
+    | est affiché hors ligne.
+    |
+    */
+
+    'device_online_seconds' => (int) env('LEADDESK_DEVICE_ONLINE_SECONDS', 120),
+
+    /*
+    |--------------------------------------------------------------------------
     | Catalogue des sources de modèles IA
     |--------------------------------------------------------------------------
     |

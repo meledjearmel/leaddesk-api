@@ -106,6 +106,8 @@ class TaskController extends ApiController
             'title' => ['sometimes', 'string', 'max:200'],
             'description' => ['sometimes', 'nullable', 'string', 'max:20000'],
             'unit_id' => ['sometimes', 'integer'],
+            // Estimation de coût en millionièmes de dollar ; distincte du coût réel.
+            'estimated_cost_micros' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ]);
 
         if (isset($data['unit_id'])) {

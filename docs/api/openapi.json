@@ -52,6 +52,15 @@
         },
         {
             "name": "D\u00e9cisions du CEO"
+        },
+        {
+            "name": "Ordinateurs"
+        },
+        {
+            "name": "Ex\u00e9cutions de t\u00e2che"
+        },
+        {
+            "name": "Co\u00fbts"
         }
     ],
     "security": [
@@ -3714,6 +3723,14 @@
                                     },
                                     "unit_id": {
                                         "type": "integer"
+                                    },
+                                    "estimated_cost_micros": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Estimation de co\u00fbt en millioni\u00e8mes de dollar ; distincte du co\u00fbt r\u00e9el.",
+                                        "minimum": 0
                                     }
                                 }
                             }
@@ -4557,6 +4574,11 @@
                                     },
                                     "extend_to_running": {
                                         "type": "boolean"
+                                    },
+                                    "new_limit_micros": {
+                                        "type": "integer",
+                                        "description": "Pour une limite de co\u00fbt atteinte : la nouvelle limite, en millioni\u00e8mes de dollar.",
+                                        "minimum": 1
                                     }
                                 }
                             }
@@ -4778,6 +4800,1028 @@
                     },
                     "409": {
                         "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/devices": {
+            "get": {
+                "operationId": "v1.devices.index",
+                "summary": "Lister les ordinateurs",
+                "tags": [
+                    "Ordinateurs"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `DeviceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeviceResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1.devices.store",
+                "description": "Appel\u00e9 par l'application \u00e0 son ouverture. Le m\u00eame `installation_id`\nretrouve le m\u00eame ordinateur : rien n'est cr\u00e9\u00e9 en double.",
+                "summary": "Enregistrer cet ordinateur",
+                "tags": [
+                    "Ordinateurs"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "installation_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 100
+                                    },
+                                    "platform": {
+                                        "type": "string",
+                                        "enum": [
+                                            "windows",
+                                            "macos",
+                                            "linux",
+                                            "android"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "installation_id",
+                                    "name",
+                                    "platform"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DeviceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DeviceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/devices/{device}": {
+            "put": {
+                "operationId": "v1.devices.update",
+                "summary": "Renommer un ordinateur",
+                "tags": [
+                    "Ordinateurs"
+                ],
+                "parameters": [
+                    {
+                        "name": "device",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 100
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`DeviceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DeviceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1.devices.destroy",
+                "description": "Refus\u00e9 (409) tant qu'une ex\u00e9cution est en cours sur cet h\u00f4te.",
+                "summary": "Retirer un ordinateur",
+                "tags": [
+                    "Ordinateurs"
+                ],
+                "parameters": [
+                    {
+                        "name": "device",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/devices/{device}/heartbeat": {
+            "post": {
+                "operationId": "v1.devices.heartbeat",
+                "description": "\u00c0 appeler r\u00e9guli\u00e8rement tant que l'application est ouverte. Sans signe\nde vie, les ex\u00e9cutions de cet h\u00f4te sont affich\u00e9es \u00ab h\u00f4te hors ligne \u00bb.",
+                "summary": "Signaler que l'ordinateur est en ligne",
+                "tags": [
+                    "Ordinateurs"
+                ],
+                "parameters": [
+                    {
+                        "name": "device",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`DeviceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/DeviceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tasks/{task}/runs": {
+            "post": {
+                "operationId": "v1.tasks.runs.store",
+                "description": "L'agent doit \u00eatre en service et affect\u00e9 \u00e0 la t\u00e2che ; l'ordinateur\ndevient l'h\u00f4te de l'ex\u00e9cution. Une t\u00e2che n'a qu'une ex\u00e9cution ouverte.",
+                "summary": "D\u00e9marrer l'ex\u00e9cution d'une t\u00e2che",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "agent_id": {
+                                        "type": "integer"
+                                    },
+                                    "device_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "agent_id",
+                                    "device_id"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs": {
+            "get": {
+                "operationId": "v1.task-runs.index",
+                "description": "Filtrable par t\u00e2che, ordinateur h\u00f4te, et avec `open=1` pour celles qui\nne sont pas termin\u00e9es. Les plus r\u00e9centes d'abord.",
+                "summary": "Lister les ex\u00e9cutions",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "task_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "device_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "open",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TaskRunResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}": {
+            "get": {
+                "operationId": "v1.task-runs.show",
+                "summary": "Lire une ex\u00e9cution",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}/usage": {
+            "post": {
+                "operationId": "v1.task-runs.usage",
+                "description": "Appel\u00e9 par l'ordinateur h\u00f4te apr\u00e8s chaque appel de mod\u00e8le ou d'outil\n(RM-35). Si une limite de co\u00fbt est atteinte, l'ex\u00e9cution renvoy\u00e9e est en\npause (`paused_cost`) et une d\u00e9cision attend le CEO (RM-36) : l'h\u00f4te\ndoit alors s'arr\u00eater.",
+                "summary": "Enregistrer le co\u00fbt r\u00e9el d'un appel",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                            "model",
+                                            "tool"
+                                        ]
+                                    },
+                                    "provider": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "description": "Fournisseur et mod\u00e8le qui ont r\u00e9ellement r\u00e9pondu.",
+                                        "maxLength": 40
+                                    },
+                                    "model": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 120
+                                    },
+                                    "input_tokens": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "output_tokens": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "cache_read_tokens": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "cache_write_tokens": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "cost_micros": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Co\u00fbt r\u00e9el en millioni\u00e8mes de dollar ; vide si le tarif est inconnu.",
+                                        "minimum": 0
+                                    },
+                                    "occurred_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}/pause": {
+            "post": {
+                "operationId": "v1.task-runs.pause",
+                "summary": "Mettre une ex\u00e9cution en pause",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}/resume": {
+            "post": {
+                "operationId": "v1.task-runs.resume",
+                "description": "Une ex\u00e9cution en pause pour limite de co\u00fbt ne se relance pas ici : elle\nattend la d\u00e9cision du CEO sur la limite (RM-36).",
+                "summary": "Relancer une ex\u00e9cution en pause",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/task-runs/{taskRun}/finish": {
+            "post": {
+                "operationId": "v1.task-runs.finish",
+                "description": "`outcome` : `completed`, `failed` ou `cancelled`. Terminer l'ex\u00e9cution\nne termine pas la t\u00e2che : sa fin se confirme par le responsable (RM-19).",
+                "summary": "Terminer une ex\u00e9cution",
+                "tags": [
+                    "Ex\u00e9cutions de t\u00e2che"
+                ],
+                "parameters": [
+                    {
+                        "name": "taskRun",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "outcome": {
+                                        "type": "string",
+                                        "enum": [
+                                            "completed",
+                                            "failed",
+                                            "cancelled"
+                                        ]
+                                    },
+                                    "reason": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 500
+                                    }
+                                },
+                                "required": [
+                                    "outcome"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TaskRunResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TaskRunResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/costs/summary": {
+            "get": {
+                "operationId": "v1.costs.summary",
+                "description": "Co\u00fbts r\u00e9els regroup\u00e9s par agent, t\u00e2che, activit\u00e9, projet ou mod\u00e8le.\nLes estimations ne sont jamais additionn\u00e9es aux co\u00fbts r\u00e9els : elles\nfigurent dans un champ s\u00e9par\u00e9.",
+                "summary": "Lire la synth\u00e8se des co\u00fbts",
+                "tags": [
+                    "Co\u00fbts"
+                ],
+                "parameters": [
+                    {
+                        "name": "group_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "agent",
+                                "task",
+                                "activity",
+                                "project",
+                                "model"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "project_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "group_by": {
+                                                    "type": "string"
+                                                },
+                                                "real_micros": {
+                                                    "type": "integer"
+                                                },
+                                                "unpriced_calls": {
+                                                    "type": "integer"
+                                                },
+                                                "estimated_micros": {
+                                                    "type": "integer"
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "real_micros": {
+                                                                "type": "integer"
+                                                            },
+                                                            "calls": {
+                                                                "type": "integer"
+                                                            },
+                                                            "unpriced_calls": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "real_micros",
+                                                            "calls",
+                                                            "unpriced_calls"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "group_by",
+                                                "real_micros",
+                                                "unpriced_calls",
+                                                "estimated_micros",
+                                                "groups"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/cost-limits": {
+            "get": {
+                "operationId": "v1.cost-limits.index",
+                "summary": "Lister les limites de co\u00fbt",
+                "tags": [
+                    "Co\u00fbts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "scope": {
+                                                        "type": "string"
+                                                    },
+                                                    "scope_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "limit_micros": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "scope",
+                                                    "scope_id",
+                                                    "limit_micros"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1.cost-limits.set",
+                "description": "R\u00e9serv\u00e9 au CEO. Niveaux : entreprise, projet ou t\u00e2che. `limit_micros`\nvide retire la limite.",
+                "summary": "R\u00e9gler une limite de co\u00fbt",
+                "tags": [
+                    "Co\u00fbts"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "scope": {
+                                        "$ref": "#/components/schemas/CostScope"
+                                    },
+                                    "scope_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Identifiant du projet ou de la t\u00e2che ; inutile pour l'entreprise."
+                                    },
+                                    "limit_micros": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "description": "Limite en millioni\u00e8mes de dollar ; vide pour retirer la limite.",
+                                        "minimum": 1
+                                    }
+                                },
+                                "required": [
+                                    "scope",
+                                    "limit_micros"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "scope": {
+                                                    "type": "string"
+                                                },
+                                                "scope_id": {
+                                                    "type": "integer"
+                                                },
+                                                "limit_micros": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "scope",
+                                                "scope_id",
+                                                "limit_micros"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5410,6 +6454,16 @@
                 ],
                 "title": "CompanyTemplate"
             },
+            "CostScope": {
+                "type": "string",
+                "description": "Niveau auquel une limite de co\u00fbt s'applique.\n",
+                "enum": [
+                    "company",
+                    "project",
+                    "task"
+                ],
+                "title": "CostScope"
+            },
             "DecisionResource": {
                 "type": "object",
                 "properties": {
@@ -5505,6 +6559,52 @@
                     "rejected"
                 ],
                 "title": "DecisionStatus"
+            },
+            "DeviceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "installation_id": {
+                        "type": "string",
+                        "description": "Identifiant g\u00e9n\u00e9r\u00e9 par l'application \u00e0 son installation."
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "platform": {
+                        "type": "string"
+                    },
+                    "last_seen_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "online": {
+                        "type": "boolean",
+                        "description": "Vrai si l'ordinateur a donn\u00e9 signe de vie r\u00e9cemment."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "installation_id",
+                    "name",
+                    "platform",
+                    "last_seen_at",
+                    "online",
+                    "created_at"
+                ],
+                "title": "DeviceResource"
             },
             "LifecycleStatus": {
                 "type": "string",
@@ -5725,6 +6825,19 @@
                 ],
                 "title": "RuleResource"
             },
+            "RunStatus": {
+                "type": "string",
+                "description": "\u00c9tat d'une ex\u00e9cution de t\u00e2che.\n| |\n|---|\n| `running` <br/>  |\n| `paused` <br/> Mise en pause par le CEO. |\n| `paused_cost` <br/> Mise en pause automatique : limite de co\u00fbt atteinte (RM-36). |\n| `completed` <br/>  |\n| `failed` <br/>  |\n| `cancelled` <br/>  |",
+                "enum": [
+                    "running",
+                    "paused",
+                    "paused_cost",
+                    "completed",
+                    "failed",
+                    "cancelled"
+                ],
+                "title": "RunStatus"
+            },
             "StepCategory": {
                 "type": "string",
                 "description": "Sens d'une \u00e9tape de workflow. Le libell\u00e9 de l'\u00e9tape est libre ; la cat\u00e9gorie permet au logiciel de savoir o\u00f9 en est le travail.\n| |\n|---|\n| `todo` <br/> \u00c0 faire. |\n| `in_progress` <br/> En cours. |\n| `review` <br/> Termin\u00e9 par ses auteurs, en attente de confirmation. |\n| `done` <br/> Termin\u00e9 et confirm\u00e9. |\n| `cancelled` <br/> Abandonn\u00e9. |",
@@ -5819,6 +6932,13 @@
                         "type": "boolean",
                         "description": "Vrai quand le CEO a confirm\u00e9 lui-m\u00eame, faute de responsable en service."
                     },
+                    "estimated_cost_micros": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Estimation de co\u00fbt en millioni\u00e8mes de dollar ; distincte du co\u00fbt r\u00e9el (RM-35)."
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -5846,10 +6966,79 @@
                     "completed_at",
                     "confirmed_by_agent_id",
                     "confirmed_by_ceo",
+                    "estimated_cost_micros",
                     "created_at",
                     "updated_at"
                 ],
                 "title": "TaskResource"
+            },
+            "TaskRunResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "task_id": {
+                        "type": "integer"
+                    },
+                    "agent_id": {
+                        "type": "integer"
+                    },
+                    "device_id": {
+                        "type": "integer",
+                        "description": "Ordinateur h\u00f4te : celui qui d\u00e9tient les fichiers de la t\u00e2che."
+                    },
+                    "device_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/RunStatus"
+                    },
+                    "status_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "host_online": {
+                        "type": "boolean",
+                        "description": "Vrai si l'ordinateur h\u00f4te est en ligne."
+                    },
+                    "waiting_for_host": {
+                        "type": "boolean",
+                        "description": "Vrai quand l'ex\u00e9cution attend le retour de son ordinateur h\u00f4te."
+                    },
+                    "cost_micros": {
+                        "type": "integer",
+                        "description": "Co\u00fbt r\u00e9el cumul\u00e9 de cette ex\u00e9cution, en millioni\u00e8mes de dollar."
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ended_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "task_id",
+                    "agent_id",
+                    "device_id",
+                    "device_name",
+                    "status",
+                    "status_reason",
+                    "host_online",
+                    "waiting_for_host",
+                    "cost_micros",
+                    "started_at",
+                    "ended_at"
+                ],
+                "title": "TaskRunResource"
             },
             "UnitResource": {
                 "type": "object",

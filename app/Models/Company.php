@@ -137,6 +137,38 @@ class Company extends Model
     }
 
     /**
+     * @return HasMany<Device, $this>
+     */
+    public function devices(): HasMany
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    /**
+     * @return HasMany<TaskRun, $this>
+     */
+    public function taskRuns(): HasMany
+    {
+        return $this->hasMany(TaskRun::class);
+    }
+
+    /**
+     * @return HasMany<UsageRecord, $this>
+     */
+    public function usageRecords(): HasMany
+    {
+        return $this->hasMany(UsageRecord::class);
+    }
+
+    /**
+     * @return HasMany<CostLimit, $this>
+     */
+    public function costLimits(): HasMany
+    {
+        return $this->hasMany(CostLimit::class);
+    }
+
+    /**
      * @return HasMany<AuditEntry, $this>
      */
     public function auditEntries(): HasMany

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Costs\ResolveCostLimitDecision;
 use App\Actions\Rules\RuleChange;
 use App\Enums\DecisionStatus;
 use App\Http\Resources\V1\DecisionResource;
@@ -26,6 +27,7 @@ class DecisionController extends ApiController
     public function __construct(
         private readonly ActingAgent $actingAgent,
         private readonly RuleChange $ruleChange,
+        private readonly ResolveCostLimitDecision $costLimit,
     ) {}
 
     /**
@@ -75,6 +77,8 @@ class DecisionController extends ApiController
         $data = $request->validate([
             'note' => ['sometimes', 'nullable', 'string', 'max:5000'],
             'extend_to_running' => ['sometimes', 'boolean'],
+            // Pour une limite de coût atteinte : la nouvelle limite, en millionièmes de dollar.
+            'new_limit_micros' => ['sometimes', 'integer', 'min:1'],
         ]);
 
         DB::transaction(function () use ($request, $model, $data): void {
@@ -92,6 +96,11 @@ class DecisionController extends ApiController
                 }
 
                 $this->ruleChange->apply($company, $change, $request->boolean('extend_to_running'));
+            }
+
+            if ($model->kind === Decision::KIND_COST_LIMIT) {
+                // RM-36 : le CEO relève la limite, l'exécution reprend.
+                $this->costLimit->approve($model, $data['new_limit_micros'] ?? null);
             }
 
             $model->update([
@@ -113,6 +122,11 @@ class DecisionController extends ApiController
     {
         $model = $this->openDecision($request, $decision);
         $data = $request->validate(['note' => ['sometimes', 'nullable', 'string', 'max:5000']]);
+
+        if ($model->kind === Decision::KIND_COST_LIMIT) {
+            // RM-36 : le CEO refuse de dépenser plus, l'exécution s'arrête.
+            $this->costLimit->reject($model);
+        }
 
         $model->update([
             'status' => DecisionStatus::Rejected,

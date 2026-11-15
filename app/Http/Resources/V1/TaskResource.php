@@ -40,6 +40,8 @@ class TaskResource extends JsonResource
             'confirmed_by_agent_id' => $this->confirmed_by_agent_id,
             /** Vrai quand le CEO a confirmé lui-même, faute de responsable en service. */
             'confirmed_by_ceo' => $this->confirmed_by_ceo,
+            /** Estimation de coût en millionièmes de dollar ; distincte du coût réel (RM-35). */
+            'estimated_cost_micros' => $this->estimated_cost_micros,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

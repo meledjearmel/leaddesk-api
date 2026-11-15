@@ -178,6 +178,21 @@ Chaque entrée : décision, raison, alternatives. Les propositions de mise à jo
 - **Décision** : table `decisions` avec une nature (`kind`), un contenu libre (`payload`), un auteur et quatre états (`pending`, `needs_info`, `approved`, `rejected`). Seul le CEO approuve, refuse ou demande des précisions ; l'auteur répond aux précisions. Première nature : `rule_change`. Les limites de coût, accès, Skills et embauches s'y ajouteront comme de nouvelles natures.
 - **Raison** : le plan demande « un seul mécanisme réutilisé partout ».
 
+## Phase 4 — Moteur d'exécution des agents (partie serveur)
+
+### D-029 · Ordinateurs hôtes et exécutions de tâche
+
+- **Décision** : l'application enregistre son ordinateur (`installation_id` généré à l'installation) et donne signe de vie régulièrement. Une exécution (`task_runs`) relie une tâche, un agent en service affecté à cette tâche et un ordinateur hôte ; une tâche n'a qu'une exécution ouverte. Si l'hôte ne donne plus signe de vie depuis un délai réglable (120 s par défaut), l'exécution est affichée « en attente de l'hôte » sans changer d'état : elle reprend dès que l'hôte revient. Terminer une exécution ne termine pas la tâche (RM-19).
+- **Raison** : « application fermée = tâche en attente, reprise à la réouverture » ; l'hôte doit être connu pour chaque tâche et visible depuis un autre ordinateur (phase 7).
+- **Alternatives** : marquer l'exécution « interrompue » par une tâche planifiée (plus de mécanique, même effet à l'écran).
+
+### D-030 · Coûts réels, estimations et limites (RM-35, RM-36, RM-37)
+
+- **Décision** : l'hôte envoie un enregistrement par appel de modèle ou d'outil (fournisseur et modèle réels, jetons, coût en millionièmes de dollar ou vide si le tarif est inconnu). Il est rattaché à l'agent, la tâche, l'activité et le projet. L'estimation est un champ distinct de la tâche et n'est jamais additionnée au réel. RM-37 étant ouverte, les limites se règlent aux trois niveaux cités par les documents — entreprise, projet, tâche — sans aucune valeur par défaut : pas de limite réglée, pas de pause. À chaque coût reçu, la limite la plus précise atteinte met l'exécution en pause (`paused_cost`) et crée une décision `cost_limit`. Le CEO approuve en donnant une nouvelle limite supérieure au dépensé (l'exécution reprend) ou refuse (l'exécution est arrêtée). Personne ne relance une exécution en pause pour coût autrement.
+- **Raison** : RM-36 est un garde-fou : la reprise doit passer par la décision du CEO, sur le serveur.
+- **Limite connue** : le coût est déclaré par l'hôte après l'appel ; le dépassement vaut donc au plus le coût d'un appel. La méthode d'estimation (RM-37) reste à définir : le serveur ne fait que garder l'estimation saisie.
+- **Alternatives** : limite par activité ou par agent ; devise autre que le dollar (le champ est en millionièmes pour rester exact).
+
 ## Propositions de mise à jour des documents de conception
 
 - `PLAN_DE_REALISATION_LEADDESK.md`, section 2 « Organisation du dépôt » : remplacer la proposition de dépôt unique par les deux dépôts `leaddesk-api` et `leaddesk-app` (D-001).

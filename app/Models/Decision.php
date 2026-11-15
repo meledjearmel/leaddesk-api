@@ -33,6 +33,8 @@ class Decision extends Model
 
     public const string KIND_RULE_CHANGE = 'rule_change';
 
+    public const string KIND_COST_LIMIT = 'cost_limit';
+
     /**
      * @return BelongsTo<Company, $this>
      */

@@ -7,11 +7,14 @@ use App\Http\Controllers\Api\V1\AiProviderController;
 use App\Http\Controllers\Api\V1\AuditEntryController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\CostController;
 use App\Http\Controllers\Api\V1\DecisionController;
+use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RuleController;
 use App\Http\Controllers\Api\V1\TaskController;
+use App\Http\Controllers\Api\V1\TaskRunController;
 use App\Http\Controllers\Api\V1\UnitController;
 use App\Http\Controllers\Api\V1\WorkflowController;
 use App\Http\Middleware\ResolveActingAgent;
@@ -106,5 +109,22 @@ Route::prefix('v1')->name('api.v1.')->group(function (): void {
             Route::post('/request-info', 'requestInfo')->name('request-info');
             Route::post('/reply', 'reply')->name('reply');
         });
+
+        Route::apiResource('devices', DeviceController::class)->except('show')->whereNumber('device');
+        Route::post('/devices/{device}/heartbeat', [DeviceController::class, 'heartbeat'])->whereNumber('device')->name('devices.heartbeat');
+
+        Route::post('/tasks/{task}/runs', [TaskRunController::class, 'store'])->whereNumber('task')->name('tasks.runs.store');
+        Route::get('/task-runs', [TaskRunController::class, 'index'])->name('task-runs.index');
+        Route::controller(TaskRunController::class)->prefix('task-runs/{taskRun}')->whereNumber('taskRun')->name('task-runs.')->group(function (): void {
+            Route::get('/', 'show')->name('show');
+            Route::post('/usage', 'recordUsage')->name('usage');
+            Route::post('/pause', 'pause')->name('pause');
+            Route::post('/resume', 'resume')->name('resume');
+            Route::post('/finish', 'finish')->name('finish');
+        });
+
+        Route::get('/costs/summary', [CostController::class, 'summary'])->name('costs.summary');
+        Route::get('/cost-limits', [CostController::class, 'limits'])->name('cost-limits.index');
+        Route::put('/cost-limits', [CostController::class, 'setLimit'])->name('cost-limits.set');
     });
 });

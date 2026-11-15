@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $confirmed_by_agent_id
  * @property bool $confirmed_by_ceo
  * @property Carbon|null $completed_at
+ * @property int|null $estimated_cost_micros
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -32,7 +33,7 @@ use Illuminate\Support\Carbon;
  * @property-read Unit $unit
  * @property-read WorkflowStep|null $step
  */
-#[Fillable(['company_id', 'activity_id', 'unit_id', 'title', 'description', 'workflow_step_id', 'confirmed_by_agent_id', 'confirmed_by_ceo', 'completed_at'])]
+#[Fillable(['company_id', 'activity_id', 'unit_id', 'title', 'description', 'workflow_step_id', 'confirmed_by_agent_id', 'confirmed_by_ceo', 'completed_at', 'estimated_cost_micros'])]
 class Task extends Model
 {
     use Audited;
@@ -88,6 +89,7 @@ class Task extends Model
         return [
             'confirmed_by_ceo' => 'boolean',
             'completed_at' => 'datetime',
+            'estimated_cost_micros' => 'integer',
         ];
     }
 }
